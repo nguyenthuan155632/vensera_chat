@@ -1,0 +1,1468 @@
+  [1m[35m (37.1ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying PRIMARY KEY)[0m
+  [1m[35m (7.6ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying PRIMARY KEY, "value" character varying, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL)[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(3782404175851902720);[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Migrating to DeviseCreateUsers (20160614153956)
+  [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (27.0ms)[0m  [1m[35mCREATE TABLE "users" ("id" serial primary key, "email" character varying DEFAULT '' NOT NULL, "encrypted_password" character varying DEFAULT '' NOT NULL, "reset_password_token" character varying, "reset_password_sent_at" timestamp, "remember_created_at" timestamp, "sign_in_count" integer DEFAULT 0 NOT NULL, "current_sign_in_at" timestamp, "last_sign_in_at" timestamp, "current_sign_in_ip" character varying, "last_sign_in_ip" character varying, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL)[0m
+  [1m[35m (3.9ms)[0m  [1m[35mCREATE UNIQUE INDEX  "index_users_on_email" ON "users"  ("email")[0m
+  [1m[35m (4.7ms)[0m  [1m[35mCREATE UNIQUE INDEX  "index_users_on_reset_password_token" ON "users"  ("reset_password_token")[0m
+  [1m[35mSQL (1.6ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20160614153956"]]
+  [1m[35m (3.1ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateChatRooms (20160614154115)
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (9.9ms)[0m  [1m[35mCREATE TABLE "chat_rooms" ("id" serial primary key, "title" character varying, "user_id" integer, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL, CONSTRAINT "fk_rails_fb091736d8"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+)[0m
+  [1m[35m (3.2ms)[0m  [1m[35mCREATE  INDEX  "index_chat_rooms_on_user_id" ON "chat_rooms"  ("user_id")[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20160614154115"]]
+  [1m[35m (1.7ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateMessages (20160614154147)
+  [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (9.2ms)[0m  [1m[35mCREATE TABLE "messages" ("id" serial primary key, "body" text, "user_id" integer, "chat_room_id" integer, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL, CONSTRAINT "fk_rails_273a25a7a6"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+, CONSTRAINT "fk_rails_00aac238e8"
+FOREIGN KEY ("chat_room_id")
+  REFERENCES "chat_rooms" ("id")
+)[0m
+  [1m[35m (5.2ms)[0m  [1m[35mCREATE  INDEX  "index_messages_on_user_id" ON "messages"  ("user_id")[0m
+  [1m[35m (2.9ms)[0m  [1m[35mCREATE  INDEX  "index_messages_on_chat_room_id" ON "messages"  ("chat_room_id")[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20160614154147"]]
+  [1m[35m (1.3ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" ORDER BY "ar_internal_metadata"."key" ASC LIMIT $1[0m  [["LIMIT", 1]]
+  [1m[35m (1.7ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "key"[0m  [["key", "environment"], ["value", "development"], ["created_at", 2017-04-30 00:41:46 UTC], ["updated_at", 2017-04-30 00:41:46 UTC]]
+  [1m[35m (2.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.7ms)[0m  [1m[34mSELECT pg_advisory_unlock(3782404175851902720)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (1.9ms)[0m  [1m[34mSELECT t2.oid::regclass::text AS to_table, a1.attname AS column, a2.attname AS primary_key, c.conname AS name, c.confupdtype AS on_update, c.confdeltype AS on_delete
+FROM pg_constraint c
+JOIN pg_class t1 ON c.conrelid = t1.oid
+JOIN pg_class t2 ON c.confrelid = t2.oid
+JOIN pg_attribute a1 ON a1.attnum = c.conkey[1] AND a1.attrelid = t1.oid
+JOIN pg_attribute a2 ON a2.attnum = c.confkey[1] AND a2.attrelid = t2.oid
+JOIN pg_namespace t3 ON c.connamespace = t3.oid
+WHERE c.contype = 'f'
+  AND t1.relname = 'chat_rooms'
+  AND t3.nspname = ANY (current_schemas(false))
+ORDER BY c.conname
+[0m
+  [1m[35m (6.6ms)[0m  [1m[34mSELECT t2.oid::regclass::text AS to_table, a1.attname AS column, a2.attname AS primary_key, c.conname AS name, c.confupdtype AS on_update, c.confdeltype AS on_delete
+FROM pg_constraint c
+JOIN pg_class t1 ON c.conrelid = t1.oid
+JOIN pg_class t2 ON c.confrelid = t2.oid
+JOIN pg_attribute a1 ON a1.attnum = c.conkey[1] AND a1.attrelid = t1.oid
+JOIN pg_attribute a2 ON a2.attnum = c.confkey[1] AND a2.attrelid = t2.oid
+JOIN pg_namespace t3 ON c.connamespace = t3.oid
+WHERE c.contype = 'f'
+  AND t1.relname = 'messages'
+  AND t3.nspname = ANY (current_schemas(false))
+ORDER BY c.conname
+[0m
+  [1m[35m (1.8ms)[0m  [1m[34mSELECT t2.oid::regclass::text AS to_table, a1.attname AS column, a2.attname AS primary_key, c.conname AS name, c.confupdtype AS on_update, c.confdeltype AS on_delete
+FROM pg_constraint c
+JOIN pg_class t1 ON c.conrelid = t1.oid
+JOIN pg_class t2 ON c.confrelid = t2.oid
+JOIN pg_attribute a1 ON a1.attnum = c.conkey[1] AND a1.attrelid = t1.oid
+JOIN pg_attribute a2 ON a2.attnum = c.confkey[1] AND a2.attrelid = t2.oid
+JOIN pg_namespace t3 ON c.connamespace = t3.oid
+WHERE c.contype = 'f'
+  AND t1.relname = 'users'
+  AND t3.nspname = ANY (current_schemas(false))
+ORDER BY c.conname
+[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Started GET "/" for 127.0.0.1 at 2017-04-30 07:42:15 +0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by ChatRoomsController#index as HTML
+Completed 401 Unauthorized in 65ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 07:42:15 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (1.3ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (42.2ms)
+Completed 200 OK in 6902ms (Views: 6882.1ms | ActiveRecord: 6.6ms)
+
+
+Started GET "/assets/application.self-83862983c2665b67e5b3754792d48f139de8da36b5da0d00b4548aeb3024e6ad.css?body=1" for 127.0.0.1 at 2017-04-30 07:42:22 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 07:42:23 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 07:42:23 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 07:42:23 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 07:42:23 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 07:42:23 +0700
+Started GET "/assets/application.self-b89234cf2659d7fedea75bca0b8d231ad7dfc2f3f57fcbaf5f44ed9dc384137b.js?body=1" for 127.0.0.1 at 2017-04-30 07:42:23 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 07:42:23 +0700
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT "users".* FROM "users"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mUser Exists (0.7ms)[0m  [1m[34mSELECT  1 AS one FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "nt@vensera.com"], ["LIMIT", 1]]
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO "users" ("email", "encrypted_password", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["email", "nt@vensera.com"], ["encrypted_password", "$2a$11$4fy1jXtapSCNT8.OwgUL6ueJxYAIPLxl.9M9zNZ2qG/dbWwQUyRmS"], ["created_at", 2017-04-30 00:43:56 UTC], ["updated_at", 2017-04-30 00:43:56 UTC]]
+  [1m[35m (1.6ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users"[0m
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 07:44:58 +0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (1.6ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (71.6ms)
+Completed 200 OK in 693ms (Views: 644.4ms | ActiveRecord: 11.7ms)
+
+
+Started POST "/users/sign_in" for 127.0.0.1 at 2017-04-30 07:45:11 +0700
+Processing by Devise::SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"O+Ip3U1OsK67N7lD92dNTwVuuBHtr/9bZhC53hqwBTtIZ3GSkEoqqTXvKrBdnJWeMJkJcARd5HCDGA4N71J7Fw==", "user"=>{"email"=>"nt@vensera.com", "password"=>"[FILTERED]", "remember_me"=>"1"}, "commit"=>"Log in"}
+  [1m[36mUser Load (0.9ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."email" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["email", "nt@vensera.com"], ["LIMIT", 1]]
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (1.7ms)[0m  [1m[33mUPDATE "users" SET "remember_created_at" = $1, "updated_at" = $2 WHERE "users"."id" = $3[0m  [["remember_created_at", 2017-04-30 00:45:11 UTC], ["updated_at", 2017-04-30 00:45:11 UTC], ["id", 1]]
+  [1m[35m (1.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (1.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[33mUPDATE "users" SET "sign_in_count" = $1, "current_sign_in_at" = $2, "last_sign_in_at" = $3, "current_sign_in_ip" = $4, "last_sign_in_ip" = $5, "updated_at" = $6 WHERE "users"."id" = $7[0m  [["sign_in_count", 1], ["current_sign_in_at", 2017-04-30 00:45:11 UTC], ["last_sign_in_at", 2017-04-30 00:45:11 UTC], ["current_sign_in_ip", "127.0.0.1"], ["last_sign_in_ip", "127.0.0.1"], ["updated_at", 2017-04-30 00:45:11 UTC], ["id", 1]]
+  [1m[35m (1.3ms)[0m  [1m[35mCOMMIT[0m
+Redirected to http://localhost:3000/
+Completed 302 Found in 383ms (ActiveRecord: 7.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-04-30 07:45:11 +0700
+Processing by ChatRoomsController#index as HTML
+  [1m[36mUser Load (4.7ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering chat_rooms/index.html.erb within layouts/application
+  [1m[36mChatRoom Load (0.7ms)[0m  [1m[34mSELECT "chat_rooms".* FROM "chat_rooms"[0m
+  Rendered collection of templates [0 times] (0.0ms)
+  Rendered chat_rooms/index.html.erb within layouts/application (7.3ms)
+Completed 200 OK in 155ms (Views: 101.2ms | ActiveRecord: 7.5ms)
+
+
+Started GET "/chat_rooms/new" for 127.0.0.1 at 2017-04-30 07:45:15 +0700
+Processing by ChatRoomsController#new as HTML
+  [1m[36mUser Load (2.1ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering chat_rooms/new.html.erb within layouts/application
+  Rendered chat_rooms/new.html.erb within layouts/application (6.2ms)
+Completed 200 OK in 189ms (Views: 129.5ms | ActiveRecord: 6.5ms)
+
+
+Started POST "/chat_rooms" for 127.0.0.1 at 2017-04-30 07:45:20 +0700
+Processing by ChatRoomsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"iuK4FXKQalhyauy21jQlOKVKcx0NcM5gXzNgG5dMJLcYYf1x/2yoETTORSXosrrv9WRTYUxZ5aYsXcCwHHuVmg==", "chat_room"=>{"title"=>"Hello"}, "commit"=>"Add!"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[35m (4.7ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.7ms)[0m  [1m[32mINSERT INTO "chat_rooms" ("title", "user_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["title", "Hello"], ["user_id", 1], ["created_at", 2017-04-30 00:45:20 UTC], ["updated_at", 2017-04-30 00:45:20 UTC]]
+  [1m[35m (1.1ms)[0m  [1m[35mCOMMIT[0m
+Redirected to http://localhost:3000/chat_rooms
+Completed 302 Found in 99ms (ActiveRecord: 6.8ms)
+
+
+Started GET "/chat_rooms" for 127.0.0.1 at 2017-04-30 07:45:20 +0700
+Processing by ChatRoomsController#index as HTML
+  [1m[36mUser Load (5.1ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering chat_rooms/index.html.erb within layouts/application
+  [1m[36mChatRoom Load (0.7ms)[0m  [1m[34mSELECT "chat_rooms".* FROM "chat_rooms"[0m
+  Rendered collection of chat_rooms/_chat_room.html.erb [1 times] (0.7ms)
+  Rendered chat_rooms/index.html.erb within layouts/application (6.7ms)
+Completed 200 OK in 75ms (Views: 65.7ms | ActiveRecord: 5.8ms)
+
+
+Started GET "/chat_rooms/1" for 127.0.0.1 at 2017-04-30 07:45:22 +0700
+Processing by ChatRoomsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (1.3ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mChatRoom Load (10.4ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mMessage Load (0.5ms)[0m  [1m[34mSELECT "messages".* FROM "messages" WHERE "messages"."chat_room_id" = 1[0m
+  Rendering chat_rooms/show.html.erb within layouts/application
+  Rendered collection of templates [0 times] (0.0ms)
+  Rendered chat_rooms/show.html.erb within layouts/application (31.9ms)
+Completed 200 OK in 182ms (Views: 95.1ms | ActiveRecord: 19.2ms)
+
+
+Started GET "/cable" for 127.0.0.1 at 2017-04-30 07:45:22 +0700
+Started GET "/cable/" [WebSocket] for 127.0.0.1 at 2017-04-30 07:45:22 +0700
+Successfully upgraded to WebSocket (REQUEST_METHOD: GET, HTTP_CONNECTION: Upgrade, HTTP_UPGRADE: websocket)
+  [1m[36mUser Load (6.2ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActionCable] [nt@vensera.com] Registered connection (Z2lkOi8vY2FibGUtY2hhdC9Vc2VyLzE)
+[ActionCable] [nt@vensera.com] ChatRoomsChannel is transmitting the subscription confirmation
+[ActionCable] [nt@vensera.com] ChatRoomsChannel is streaming from chat_rooms_1_channel
+[ActionCable] [nt@vensera.com] ChatRoomsChannel#send_message({"message"=>"good", "chat_room_id"=>1})
+[ActionCable] [nt@vensera.com]   [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+[ActionCable] [nt@vensera.com]   [1m[36mChatRoom Load (0.4ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActionCable] [nt@vensera.com]   [1m[35mSQL (1.7ms)[0m  [1m[32mINSERT INTO "messages" ("body", "user_id", "chat_room_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["body", "good"], ["user_id", 1], ["chat_room_id", 1], ["created_at", 2017-04-30 00:45:30 UTC], ["updated_at", 2017-04-30 00:45:30 UTC]]
+[ActionCable] [nt@vensera.com]   [1m[35m (3.1ms)[0m  [1m[35mCOMMIT[0m
+[ActionCable] [nt@vensera.com] [ActiveJob] Enqueued MessageBroadcastJob (Job ID: d3a1f74a-d7a0-47cc-9e4e-74eadee1fd61) to Async(default) with arguments: #<GlobalID:0x007ff0e03988b0 @uri=#<URI::GID gid://cable-chat/Message/1>>
+  [1m[36mMessage Load (0.4ms)[0m  [1m[34mSELECT  "messages".* FROM "messages" WHERE "messages"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [d3a1f74a-d7a0-47cc-9e4e-74eadee1fd61] Performing MessageBroadcastJob from Async(default) with arguments: #<GlobalID:0x00564cfaa562c8 @uri=#<URI::GID gid://cable-chat/Message/1>>
+[ActiveJob] [MessageBroadcastJob] [d3a1f74a-d7a0-47cc-9e4e-74eadee1fd61]   [1m[36mChatRoom Load (1.9ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [d3a1f74a-d7a0-47cc-9e4e-74eadee1fd61]   [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [d3a1f74a-d7a0-47cc-9e4e-74eadee1fd61]   Rendered messages/_message.html.erb (3.2ms)
+[ActiveJob] [MessageBroadcastJob] [d3a1f74a-d7a0-47cc-9e4e-74eadee1fd61] [ActionCable] Broadcasting to chat_rooms_1_channel: {:message=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt\" src=\"https://www.gravatar.com/avatar/bc9e0d24bfb75d49b2c75120a9fabe7d?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p class=\"card-text\">\n          <span class=\"text-muted\">nt at 00:45:30 30 April 2017 says</span><br>\n          good\n        </p>\n      </div>\n    </div>\n\n  </div>\n</div>"}
+[ActiveJob] [MessageBroadcastJob] [d3a1f74a-d7a0-47cc-9e4e-74eadee1fd61] Performed MessageBroadcastJob from Async(default) in 33.8ms
+[ActionCable] [nt@vensera.com] ChatRoomsChannel transmitting {"message"=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt\" src=\"https://www.gravatar.com/avatar/bc9e0d24bfb75d49b2c75120a9fabe7d?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p class=\"car... (via streamed from chat_rooms_1_channel)
+[ActionCable] [nt@vensera.com] ChatRoomsChannel#send_message({"message"=>"never\n", "chat_room_id"=>1})
+[ActionCable] [nt@vensera.com]   [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+[ActionCable] [nt@vensera.com]   [1m[36mChatRoom Load (0.3ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActionCable] [nt@vensera.com]   [1m[35mSQL (3.8ms)[0m  [1m[32mINSERT INTO "messages" ("body", "user_id", "chat_room_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["body", "never\n"], ["user_id", 1], ["chat_room_id", 1], ["created_at", 2017-04-30 00:45:36 UTC], ["updated_at", 2017-04-30 00:45:36 UTC]]
+[ActionCable] [nt@vensera.com]   [1m[35m (8.1ms)[0m  [1m[35mCOMMIT[0m
+[ActionCable] [nt@vensera.com] [ActiveJob] Enqueued MessageBroadcastJob (Job ID: 8a83af34-71ff-4c21-87f5-04bf5f2f2529) to Async(default) with arguments: #<GlobalID:0x007ff0e04171b0 @uri=#<URI::GID gid://cable-chat/Message/2>>
+  [1m[36mMessage Load (0.5ms)[0m  [1m[34mSELECT  "messages".* FROM "messages" WHERE "messages"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [8a83af34-71ff-4c21-87f5-04bf5f2f2529] Performing MessageBroadcastJob from Async(default) with arguments: #<GlobalID:0x007ff0cd67a320 @uri=#<URI::GID gid://cable-chat/Message/2>>
+[ActiveJob] [MessageBroadcastJob] [8a83af34-71ff-4c21-87f5-04bf5f2f2529]   [1m[36mChatRoom Load (0.3ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [8a83af34-71ff-4c21-87f5-04bf5f2f2529]   [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [8a83af34-71ff-4c21-87f5-04bf5f2f2529]   Rendered messages/_message.html.erb (12.1ms)
+[ActiveJob] [MessageBroadcastJob] [8a83af34-71ff-4c21-87f5-04bf5f2f2529] [ActionCable] Broadcasting to chat_rooms_1_channel: {:message=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt\" src=\"https://www.gravatar.com/avatar/bc9e0d24bfb75d49b2c75120a9fabe7d?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p class=\"card-text\">\n          <span class=\"text-muted\">nt at 00:45:36 30 April 2017 says</span><br>\n          never\n\n        </p>\n      </div>\n    </div>\n\n  </div>\n</div>"}
+[ActiveJob] [MessageBroadcastJob] [8a83af34-71ff-4c21-87f5-04bf5f2f2529] Performed MessageBroadcastJob from Async(default) in 16.65ms
+[ActionCable] [nt@vensera.com] ChatRoomsChannel transmitting {"message"=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt\" src=\"https://www.gravatar.com/avatar/bc9e0d24bfb75d49b2c75120a9fabe7d?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p class=\"car... (via streamed from chat_rooms_1_channel)
+  [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mUser Exists (5.2ms)[0m  [1m[34mSELECT  1 AS one FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "nt.apple.it@gmail.com"], ["LIMIT", 1]]
+  [1m[35mSQL (3.1ms)[0m  [1m[32mINSERT INTO "users" ("email", "encrypted_password", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["email", "nt.apple.it@gmail.com"], ["encrypted_password", "$2a$11$RmNjGc03TxKHdAmZtCNwjukRPxFm/1XnkIv/bQEhv40ec0qfVI4e2"], ["created_at", 2017-04-30 00:46:33 UTC], ["updated_at", 2017-04-30 00:46:33 UTC]]
+  [1m[35m (1.8ms)[0m  [1m[35mCOMMIT[0m
+Started GET "/chat_rooms/1" for 127.0.0.1 at 2017-04-30 07:47:02 +0700
+Started GET "/cable" for 127.0.0.1 at 2017-04-30 07:47:02 +0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (28.8ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Started GET "/cable/" [WebSocket] for 127.0.0.1 at 2017-04-30 07:47:02 +0700
+Successfully upgraded to WebSocket (REQUEST_METHOD: GET, HTTP_CONNECTION: Upgrade, HTTP_UPGRADE: websocket)
+Processing by ChatRoomsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (7.3ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActionCable] [nt@vensera.com] Registered connection (Z2lkOi8vY2FibGUtY2hhdC9Vc2VyLzE)
+Completed 401 Unauthorized in 67ms (ActiveRecord: 0.0ms)
+
+
+[ActionCable] [nt@vensera.com] ChatRoomsChannel is transmitting the subscription confirmation
+[ActionCable] [nt@vensera.com] ChatRoomsChannel is streaming from chat_rooms_1_channel
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 07:47:03 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (15.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (62.7ms)
+Completed 200 OK in 740ms (Views: 737.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-83862983c2665b67e5b3754792d48f139de8da36b5da0d00b4548aeb3024e6ad.css?body=1" for 127.0.0.1 at 2017-04-30 07:47:03 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 07:47:03 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 07:47:03 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 07:47:03 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 07:47:03 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 07:47:04 +0700
+Started GET "/assets/application.self-b89234cf2659d7fedea75bca0b8d231ad7dfc2f3f57fcbaf5f44ed9dc384137b.js?body=1" for 127.0.0.1 at 2017-04-30 07:47:04 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 07:47:04 +0700
+Started POST "/users/sign_in" for 127.0.0.1 at 2017-04-30 07:47:18 +0700
+Processing by Devise::SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"HsTArwxug8ihyoSZ5f0Z/YHlMqJIcT71P2rWhhvsgXZAeyAGbTjYd/X2Xr+l9y0pJtsiOBE0PTs4F1VwSmRiWg==", "user"=>{"email"=>"nt.apple.it@gmail.com", "password"=>"[FILTERED]", "remember_me"=>"1"}, "commit"=>"Log in"}
+  [1m[36mUser Load (6.7ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."email" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["email", "nt.apple.it@gmail.com"], ["LIMIT", 1]]
+  [1m[35m (2.0ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[33mUPDATE "users" SET "remember_created_at" = $1, "updated_at" = $2 WHERE "users"."id" = $3[0m  [["remember_created_at", 2017-04-30 00:47:18 UTC], ["updated_at", 2017-04-30 00:47:18 UTC], ["id", 2]]
+  [1m[35m (8.4ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (1.4ms)[0m  [1m[33mUPDATE "users" SET "sign_in_count" = $1, "current_sign_in_at" = $2, "last_sign_in_at" = $3, "current_sign_in_ip" = $4, "last_sign_in_ip" = $5, "updated_at" = $6 WHERE "users"."id" = $7[0m  [["sign_in_count", 1], ["current_sign_in_at", 2017-04-30 00:47:18 UTC], ["last_sign_in_at", 2017-04-30 00:47:18 UTC], ["current_sign_in_ip", "127.0.0.1"], ["last_sign_in_ip", "127.0.0.1"], ["updated_at", 2017-04-30 00:47:18 UTC], ["id", 2]]
+  [1m[35m (1.2ms)[0m  [1m[35mCOMMIT[0m
+Redirected to http://localhost:3000/chat_rooms/1
+Completed 302 Found in 386ms (ActiveRecord: 20.2ms)
+
+
+Started GET "/chat_rooms/1" for 127.0.0.1 at 2017-04-30 07:47:18 +0700
+Processing by ChatRoomsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (3.5ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mChatRoom Load (4.5ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mMessage Load (6.1ms)[0m  [1m[34mSELECT "messages".* FROM "messages" WHERE "messages"."chat_room_id" = 1[0m
+  Rendering chat_rooms/show.html.erb within layouts/application
+  [1m[36mUser Load (1.5ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE (0.0ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendered collection of messages/_message.html.erb [2 times] (37.5ms)
+  Rendered chat_rooms/show.html.erb within layouts/application (47.9ms)
+Completed 200 OK in 256ms (Views: 90.9ms | ActiveRecord: 39.6ms)
+
+
+Started GET "/cable" for 127.0.0.1 at 2017-04-30 07:47:19 +0700
+Started GET "/cable/" [WebSocket] for 127.0.0.1 at 2017-04-30 07:47:19 +0700
+Successfully upgraded to WebSocket (REQUEST_METHOD: GET, HTTP_CONNECTION: Upgrade, HTTP_UPGRADE: websocket)
+  [1m[36mUser Load (2.2ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+[ActionCable] [nt.apple.it@gmail.com] Registered connection (Z2lkOi8vY2FibGUtY2hhdC9Vc2VyLzI)
+[ActionCable] [nt.apple.it@gmail.com] ChatRoomsChannel is transmitting the subscription confirmation
+[ActionCable] [nt.apple.it@gmail.com] ChatRoomsChannel is streaming from chat_rooms_1_channel
+[ActionCable] [nt.apple.it@gmail.com] ChatRoomsChannel#send_message({"message"=>"fgdfgd\n", "chat_room_id"=>1})
+[ActionCable] [nt.apple.it@gmail.com]   [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+[ActionCable] [nt.apple.it@gmail.com]   [1m[36mChatRoom Load (0.3ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActionCable] [nt.apple.it@gmail.com]   [1m[35mSQL (2.5ms)[0m  [1m[32mINSERT INTO "messages" ("body", "user_id", "chat_room_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["body", "fgdfgd\n"], ["user_id", 2], ["chat_room_id", 1], ["created_at", 2017-04-30 00:47:25 UTC], ["updated_at", 2017-04-30 00:47:25 UTC]]
+[ActionCable] [nt.apple.it@gmail.com]   [1m[35m (8.1ms)[0m  [1m[35mCOMMIT[0m
+[ActionCable] [nt.apple.it@gmail.com] [ActiveJob] Enqueued MessageBroadcastJob (Job ID: 28982e61-9278-404e-afdb-3562b361d98c) to Async(default) with arguments: #<GlobalID:0x007f7b1813a278 @uri=#<URI::GID gid://cable-chat/Message/3>>
+  [1m[36mMessage Load (2.5ms)[0m  [1m[34mSELECT  "messages".* FROM "messages" WHERE "messages"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [28982e61-9278-404e-afdb-3562b361d98c] Performing MessageBroadcastJob from Async(default) with arguments: #<GlobalID:0x007f7b05c708d0 @uri=#<URI::GID gid://cable-chat/Message/3>>
+[ActiveJob] [MessageBroadcastJob] [28982e61-9278-404e-afdb-3562b361d98c]   [1m[36mChatRoom Load (0.4ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [28982e61-9278-404e-afdb-3562b361d98c]   [1m[36mUser Load (2.3ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [28982e61-9278-404e-afdb-3562b361d98c]   Rendered messages/_message.html.erb (4.6ms)
+[ActiveJob] [MessageBroadcastJob] [28982e61-9278-404e-afdb-3562b361d98c] [ActionCable] Broadcasting to chat_rooms_1_channel: {:message=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt.apple.it\" src=\"https://www.gravatar.com/avatar/d87e4f9da3c5d13cef10d89fd9f5c672?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p class=\"card-text\">\n          <span class=\"text-muted\">nt.apple.it at 00:47:25 30 April 2017 says</span><br>\n          fgdfgd\n\n        </p>\n      </div>\n    </div>\n\n  </div>\n</div>"}
+[ActionCable] [nt@vensera.com] ChatRoomsChannel transmitting {"message"=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt.apple.it\" src=\"https://www.gravatar.com/avatar/d87e4f9da3c5d13cef10d89fd9f5c672?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p cl... (via streamed from chat_rooms_1_channel)
+[ActiveJob] [MessageBroadcastJob] [28982e61-9278-404e-afdb-3562b361d98c] Performed MessageBroadcastJob from Async(default) in 48.65ms
+[ActionCable] [nt.apple.it@gmail.com] ChatRoomsChannel transmitting {"message"=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt.apple.it\" src=\"https://www.gravatar.com/avatar/d87e4f9da3c5d13cef10d89fd9f5c672?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p cl... (via streamed from chat_rooms_1_channel)
+Started GET "/" for 127.0.0.1 at 2017-04-30 07:47:46 +0700
+Processing by ChatRoomsController#index as HTML
+  [1m[36mUser Load (3.3ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  Rendering chat_rooms/index.html.erb within layouts/application
+  [1m[36mChatRoom Load (2.0ms)[0m  [1m[34mSELECT "chat_rooms".* FROM "chat_rooms"[0m
+  Rendered collection of chat_rooms/_chat_room.html.erb [1 times] (7.4ms)
+  Rendered chat_rooms/index.html.erb within layouts/application (18.0ms)
+Completed 200 OK in 81ms (Views: 73.3ms | ActiveRecord: 5.3ms)
+
+
+Started GET "/chat_rooms/1" for 127.0.0.1 at 2017-04-30 07:47:48 +0700
+Processing by ChatRoomsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (3.1ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mChatRoom Load (0.3ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mMessage Load (0.3ms)[0m  [1m[34mSELECT "messages".* FROM "messages" WHERE "messages"."chat_room_id" = 1[0m
+  Rendering chat_rooms/show.html.erb within layouts/application
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE (0.0ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mUser Load (2.6ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  Rendered collection of messages/_message.html.erb [3 times] (27.2ms)
+  Rendered chat_rooms/show.html.erb within layouts/application (30.4ms)
+Completed 200 OK in 92ms (Views: 81.5ms | ActiveRecord: 6.6ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-04-30 07:47:49 +0700
+Processing by ChatRoomsController#index as HTML
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  Rendering chat_rooms/index.html.erb within layouts/application
+  [1m[36mChatRoom Load (0.3ms)[0m  [1m[34mSELECT "chat_rooms".* FROM "chat_rooms"[0m
+  Rendered collection of chat_rooms/_chat_room.html.erb [1 times] (0.6ms)
+  Rendered chat_rooms/index.html.erb within layouts/application (6.6ms)
+Completed 200 OK in 78ms (Views: 74.4ms | ActiveRecord: 0.6ms)
+
+
+Started GET "/chat_rooms/1" for 127.0.0.1 at 2017-04-30 07:48:27 +0700
+Processing by ChatRoomsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (1.3ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mChatRoom Load (1.5ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mMessage Load (1.9ms)[0m  [1m[34mSELECT "messages".* FROM "messages" WHERE "messages"."chat_room_id" = 1[0m
+  Rendering chat_rooms/show.html.erb within layouts/application
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE (0.0ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mUser Load (5.4ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  Rendered collection of messages/_message.html.erb [3 times] (19.3ms)
+  Rendered chat_rooms/show.html.erb within layouts/application (27.0ms)
+Completed 200 OK in 94ms (Views: 77.3ms | ActiveRecord: 10.6ms)
+
+
+[ActionCable] [nt.apple.it@gmail.com] ChatRoomsChannel#send_message({"message"=>"hello", "chat_room_id"=>1})
+[ActionCable] [nt.apple.it@gmail.com]   [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+[ActionCable] [nt.apple.it@gmail.com]   [1m[36mChatRoom Load (1.7ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActionCable] [nt.apple.it@gmail.com]   [1m[35mSQL (1.8ms)[0m  [1m[32mINSERT INTO "messages" ("body", "user_id", "chat_room_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["body", "hello"], ["user_id", 2], ["chat_room_id", 1], ["created_at", 2017-04-30 00:48:42 UTC], ["updated_at", 2017-04-30 00:48:42 UTC]]
+[ActionCable] [nt.apple.it@gmail.com]   [1m[35m (1.5ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mMessage Load (0.5ms)[0m  [1m[34mSELECT  "messages".* FROM "messages" WHERE "messages"."id" = $1 LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [caa186bc-9625-4d7e-be67-2cd3ba01c0dc] Performing MessageBroadcastJob from Async(default) with arguments: #<GlobalID:0x007f7b04e30ea0 @uri=#<URI::GID gid://cable-chat/Message/4>>
+[ActionCable] [nt.apple.it@gmail.com] [ActiveJob] Enqueued MessageBroadcastJob (Job ID: caa186bc-9625-4d7e-be67-2cd3ba01c0dc) to Async(default) with arguments: #<GlobalID:0x007f7b04eb8d78 @uri=#<URI::GID gid://cable-chat/Message/4>>
+[ActiveJob] [MessageBroadcastJob] [caa186bc-9625-4d7e-be67-2cd3ba01c0dc]   [1m[36mChatRoom Load (0.3ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [caa186bc-9625-4d7e-be67-2cd3ba01c0dc]   [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [caa186bc-9625-4d7e-be67-2cd3ba01c0dc]   Rendered messages/_message.html.erb (11.9ms)
+[ActiveJob] [MessageBroadcastJob] [caa186bc-9625-4d7e-be67-2cd3ba01c0dc] [ActionCable] Broadcasting to chat_rooms_1_channel: {:message=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt.apple.it\" src=\"https://www.gravatar.com/avatar/d87e4f9da3c5d13cef10d89fd9f5c672?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p class=\"card-text\">\n          <span class=\"text-muted\">nt.apple.it at 00:48:42 30 April 2017 says</span><br>\n          hello\n        </p>\n      </div>\n    </div>\n\n  </div>\n</div>"}
+[ActiveJob] [MessageBroadcastJob] [caa186bc-9625-4d7e-be67-2cd3ba01c0dc] Performed MessageBroadcastJob from Async(default) in 28.33ms
+[ActionCable] [nt@vensera.com] ChatRoomsChannel transmitting {"message"=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt.apple.it\" src=\"https://www.gravatar.com/avatar/d87e4f9da3c5d13cef10d89fd9f5c672?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p cl... (via streamed from chat_rooms_1_channel)
+[ActionCable] [nt.apple.it@gmail.com] ChatRoomsChannel transmitting {"message"=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt.apple.it\" src=\"https://www.gravatar.com/avatar/d87e4f9da3c5d13cef10d89fd9f5c672?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p cl... (via streamed from chat_rooms_1_channel)
+[ActionCable] [nt@vensera.com] ChatRoomsChannel#send_message({"message"=>"hello", "chat_room_id"=>1})
+[ActionCable] [nt@vensera.com]   [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+[ActionCable] [nt@vensera.com]   [1m[36mChatRoom Load (0.2ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActionCable] [nt@vensera.com]   [1m[35mSQL (0.8ms)[0m  [1m[32mINSERT INTO "messages" ("body", "user_id", "chat_room_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["body", "hello"], ["user_id", 1], ["chat_room_id", 1], ["created_at", 2017-04-30 00:48:48 UTC], ["updated_at", 2017-04-30 00:48:48 UTC]]
+[ActionCable] [nt@vensera.com]   [1m[35m (4.4ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mMessage Load (4.3ms)[0m  [1m[34mSELECT  "messages".* FROM "messages" WHERE "messages"."id" = $1 LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [ccd2e6a6-4fed-43b0-94db-86eb87abfa0a] Performing MessageBroadcastJob from Async(default) with arguments: #<GlobalID:0x0055dbfaa3a2d8 @uri=#<URI::GID gid://cable-chat/Message/5>>
+[ActionCable] [nt@vensera.com] [ActiveJob] Enqueued MessageBroadcastJob (Job ID: ccd2e6a6-4fed-43b0-94db-86eb87abfa0a) to Async(default) with arguments: #<GlobalID:0x0055dbfab36a88 @uri=#<URI::GID gid://cable-chat/Message/5>>
+[ActiveJob] [MessageBroadcastJob] [ccd2e6a6-4fed-43b0-94db-86eb87abfa0a]   [1m[36mChatRoom Load (10.5ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [ccd2e6a6-4fed-43b0-94db-86eb87abfa0a]   [1m[36mUser Load (3.4ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [ccd2e6a6-4fed-43b0-94db-86eb87abfa0a]   Rendered messages/_message.html.erb (5.3ms)
+[ActiveJob] [MessageBroadcastJob] [ccd2e6a6-4fed-43b0-94db-86eb87abfa0a] [ActionCable] Broadcasting to chat_rooms_1_channel: {:message=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt\" src=\"https://www.gravatar.com/avatar/bc9e0d24bfb75d49b2c75120a9fabe7d?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p class=\"card-text\">\n          <span class=\"text-muted\">nt at 00:48:48 30 April 2017 says</span><br>\n          hello\n        </p>\n      </div>\n    </div>\n\n  </div>\n</div>"}
+[ActiveJob] [MessageBroadcastJob] [ccd2e6a6-4fed-43b0-94db-86eb87abfa0a] Performed MessageBroadcastJob from Async(default) in 29.92ms
+[ActionCable] [nt.apple.it@gmail.com] ChatRoomsChannel transmitting {"message"=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt\" src=\"https://www.gravatar.com/avatar/bc9e0d24bfb75d49b2c75120a9fabe7d?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p class=\"car... (via streamed from chat_rooms_1_channel)
+[ActionCable] [nt@vensera.com] ChatRoomsChannel transmitting {"message"=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt\" src=\"https://www.gravatar.com/avatar/bc9e0d24bfb75d49b2c75120a9fabe7d?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p class=\"car... (via streamed from chat_rooms_1_channel)
+[ActionCable] [nt.apple.it@gmail.com] ChatRoomsChannel#send_message({"message"=>"nothing", "chat_room_id"=>1})
+[ActionCable] [nt.apple.it@gmail.com]   [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+[ActionCable] [nt.apple.it@gmail.com]   [1m[36mChatRoom Load (0.2ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActionCable] [nt.apple.it@gmail.com]   [1m[35mSQL (4.1ms)[0m  [1m[32mINSERT INTO "messages" ("body", "user_id", "chat_room_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["body", "nothing"], ["user_id", 2], ["chat_room_id", 1], ["created_at", 2017-04-30 00:49:26 UTC], ["updated_at", 2017-04-30 00:49:26 UTC]]
+[ActionCable] [nt.apple.it@gmail.com]   [1m[35m (1.4ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mMessage Load (0.4ms)[0m  [1m[34mSELECT  "messages".* FROM "messages" WHERE "messages"."id" = $1 LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [adfc0d01-5fd5-46e1-aaae-658a1c5ccf83] Performing MessageBroadcastJob from Async(default) with arguments: #<GlobalID:0x0055dbfa1cb4a8 @uri=#<URI::GID gid://cable-chat/Message/6>>
+[ActionCable] [nt.apple.it@gmail.com] [ActiveJob] Enqueued MessageBroadcastJob (Job ID: adfc0d01-5fd5-46e1-aaae-658a1c5ccf83) to Async(default) with arguments: #<GlobalID:0x0055dbfa231190 @uri=#<URI::GID gid://cable-chat/Message/6>>
+[ActiveJob] [MessageBroadcastJob] [adfc0d01-5fd5-46e1-aaae-658a1c5ccf83]   [1m[36mChatRoom Load (9.1ms)[0m  [1m[34mSELECT  "chat_rooms".* FROM "chat_rooms" WHERE "chat_rooms"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [adfc0d01-5fd5-46e1-aaae-658a1c5ccf83]   [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+[ActiveJob] [MessageBroadcastJob] [adfc0d01-5fd5-46e1-aaae-658a1c5ccf83]   Rendered messages/_message.html.erb (13.1ms)
+[ActiveJob] [MessageBroadcastJob] [adfc0d01-5fd5-46e1-aaae-658a1c5ccf83] [ActionCable] Broadcasting to chat_rooms_1_channel: {:message=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt.apple.it\" src=\"https://www.gravatar.com/avatar/d87e4f9da3c5d13cef10d89fd9f5c672?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p class=\"card-text\">\n          <span class=\"text-muted\">nt.apple.it at 00:49:26 30 April 2017 says</span><br>\n          nothing\n        </p>\n      </div>\n    </div>\n\n  </div>\n</div>"}
+[ActiveJob] [MessageBroadcastJob] [adfc0d01-5fd5-46e1-aaae-658a1c5ccf83] Performed MessageBroadcastJob from Async(default) in 31.79ms
+[ActionCable] [nt.apple.it@gmail.com] ChatRoomsChannel transmitting {"message"=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt.apple.it\" src=\"https://www.gravatar.com/avatar/d87e4f9da3c5d13cef10d89fd9f5c672?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p cl... (via streamed from chat_rooms_1_channel)
+[ActionCable] [nt@vensera.com] ChatRoomsChannel transmitting {"message"=>"<div class=\"card\">\n  <div class=\"card-block\">\n    <div class=\"row\">\n      <div class=\"col-md-1\">\n        <img alt=\"nt.apple.it\" src=\"https://www.gravatar.com/avatar/d87e4f9da3c5d13cef10d89fd9f5c672?s=40\" />\n      </div>\n      <div class=\"col-md-11\">\n        <p cl... (via streamed from chat_rooms_1_channel)
+Started GET "/" for 127.0.0.1 at 2017-04-30 07:50:01 +0700
+Processing by ChatRoomsController#index as HTML
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  Rendering chat_rooms/index.html.erb within layouts/application
+  [1m[36mChatRoom Load (2.1ms)[0m  [1m[34mSELECT "chat_rooms".* FROM "chat_rooms"[0m
+  Rendered collection of chat_rooms/_chat_room.html.erb [1 times] (10.4ms)
+  Rendered chat_rooms/index.html.erb within layouts/application (18.1ms)
+Completed 200 OK in 117ms (Views: 103.9ms | ActiveRecord: 2.6ms)
+
+
+Started DELETE "/users/sign_out" for 127.0.0.1 at 2017-04-30 07:50:22 +0700
+Processing by Devise::SessionsController#destroy as HTML
+  Parameters: {"authenticity_token"=>"wTTRQPwoA3BYHPBi4YAfiqhhB680a0o1RG0r/aGK4JP7w/qM71R1xwYRKI1nQ7oKnF3/xCjvuumIkOSSB4Bo8Q=="}
+  [1m[36mUser Load (4.0ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[35m (9.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[33mUPDATE "users" SET "remember_created_at" = $1, "updated_at" = $2 WHERE "users"."id" = $3[0m  [["remember_created_at", nil], ["updated_at", 2017-04-30 00:50:22 UTC], ["id", 2]]
+  [1m[35m (19.9ms)[0m  [1m[35mCOMMIT[0m
+Redirected to http://localhost:3000/
+Completed 302 Found in 40ms (ActiveRecord: 33.4ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-04-30 07:50:22 +0700
+Processing by ChatRoomsController#index as HTML
+Completed 401 Unauthorized in 1ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 07:50:22 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (8.6ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (20.1ms)
+Completed 200 OK in 86ms (Views: 84.6ms | ActiveRecord: 0.0ms)
+
+
+[ActionCable] [nt.apple.it@gmail.com] Finished "/cable/" [WebSocket] for 127.0.0.1 at 2017-04-30 07:50:22 +0700
+[ActionCable] [nt.apple.it@gmail.com] ChatRoomsChannel stopped streaming from chat_rooms_1_channel
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:06:39 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.9ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (65.0ms)
+Completed 200 OK in 7774ms (Views: 7718.7ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-c52d1664803fec64232fd010ba47fe6ada5b2fd1f7da11b30160ddb0b261ab84.css?body=1" for 127.0.0.1 at 2017-04-30 08:06:47 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:19:32 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (1.1ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (108.0ms)
+Completed 200 OK in 5856ms (Views: 5753.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-d5520f22713212e512a50353cd8081acf54de0ee4093067ec8326eddf1aff5ff.css?body=1" for 127.0.0.1 at 2017-04-30 08:19:39 +0700
+Started GET "/assets/scripts.self-bd9b8edfdd410d1b8f64f0a738dfa01c5d34e7b00f2f1dceb5798889686bf612.js?body=1" for 127.0.0.1 at 2017-04-30 08:19:39 +0700
+Started GET "/assets/application.self-afe802b04eaf1de2ea762489c83c08aa4c4ff3ff13c21566e43cb710683f5abc.js?body=1" for 127.0.0.1 at 2017-04-30 08:19:39 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:22:27 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.9ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (14.2ms)
+Completed 500 Internal Server Error in 68ms (ActiveRecord: 0.0ms)
+
+
+  
+ActionView::Template::Error (couldn't find file 'particles' with type 'application/javascript'):
+     5:   <%= csrf_meta_tags %>
+     6: 
+     7:   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+     8:   <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+     9: </head>
+    10: 
+    11: <body>
+  
+app/assets/javascripts/application.js:17
+app/views/layouts/application.html.erb:8:in `_app_views_layouts_application_html_erb___3726897012565533458_70083201072060'
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/template_error.html.erb within rescues/layout
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_source.html.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_source.html.erb (6.1ms)
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (5.3ms)
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (0.9ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/template_error.html.erb within rescues/layout (131.3ms)
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:22:48 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (1.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (14.0ms)
+Completed 200 OK in 230ms (Views: 211.4ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:22:48 +0700
+Started GET "/assets/scripts.self-1ecd94981d67885bfd123125b1cecb2b919a5003ed67c2cc5e0bc7cbb309a941.js?body=1" for 127.0.0.1 at 2017-04-30 08:22:48 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:22:48 +0700
+Started GET "/users/particles.min.js?_=1493515368439" for 127.0.0.1 at 2017-04-30 08:22:48 +0700
+  
+ActionController::RoutingError (No route matches [GET] "/users/particles.min.js"):
+  
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/debug_exceptions.rb:53:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `block in tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `tagged'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/request_id.rb:24:in `call'
+rack (2.0.0.rc1) lib/rack/method_override.rb:22:in `call'
+rack (2.0.0.rc1) lib/rack/runtime.rb:22:in `call'
+activesupport (5.0.0.rc1) lib/active_support/cache/strategy/local_cache_middleware.rb:28:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/static.rb:136:in `call'
+rack (2.0.0.rc1) lib/rack/sendfile.rb:111:in `call'
+railties (5.0.0.rc1) lib/rails/engine.rb:522:in `call'
+puma (3.4.0) lib/puma/configuration.rb:224:in `call'
+puma (3.4.0) lib/puma/server.rb:569:in `handle_request'
+puma (3.4.0) lib/puma/server.rb:406:in `process_client'
+puma (3.4.0) lib/puma/server.rb:271:in `block in run'
+puma (3.4.0) lib/puma/thread_pool.rb:114:in `block in spawn_thread'
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb (0.6ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb (15.6ms)
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:23:10 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (1.1ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (17.4ms)
+Completed 200 OK in 103ms (Views: 102.5ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-d5520f22713212e512a50353cd8081acf54de0ee4093067ec8326eddf1aff5ff.css?body=1" for 127.0.0.1 at 2017-04-30 08:23:10 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:23:10 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:23:10 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:23:10 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:23:10 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:23:10 +0700
+Started GET "/assets/scripts.self-1ecd94981d67885bfd123125b1cecb2b919a5003ed67c2cc5e0bc7cbb309a941.js?body=1" for 127.0.0.1 at 2017-04-30 08:23:10 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:23:10 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:23:10 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:23:10 +0700
+Started GET "/users/particles.min.js?_=1493515390693" for 127.0.0.1 at 2017-04-30 08:23:10 +0700
+  
+ActionController::RoutingError (No route matches [GET] "/users/particles.min.js"):
+  
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/debug_exceptions.rb:53:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `block in tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `tagged'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/request_id.rb:24:in `call'
+rack (2.0.0.rc1) lib/rack/method_override.rb:22:in `call'
+rack (2.0.0.rc1) lib/rack/runtime.rb:22:in `call'
+activesupport (5.0.0.rc1) lib/active_support/cache/strategy/local_cache_middleware.rb:28:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/static.rb:136:in `call'
+rack (2.0.0.rc1) lib/rack/sendfile.rb:111:in `call'
+railties (5.0.0.rc1) lib/rails/engine.rb:522:in `call'
+puma (3.4.0) lib/puma/configuration.rb:224:in `call'
+puma (3.4.0) lib/puma/server.rb:569:in `handle_request'
+puma (3.4.0) lib/puma/server.rb:406:in `process_client'
+puma (3.4.0) lib/puma/server.rb:271:in `block in run'
+puma (3.4.0) lib/puma/thread_pool.rb:114:in `block in spawn_thread'
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb (0.5ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb (15.5ms)
+Started GET "/users/particles.min.js?_=1493515390693" for 127.0.0.1 at 2017-04-30 08:23:20 +0700
+  
+ActionController::RoutingError (No route matches [GET] "/users/particles.min.js"):
+  
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/debug_exceptions.rb:53:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `block in tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `tagged'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/request_id.rb:24:in `call'
+rack (2.0.0.rc1) lib/rack/method_override.rb:22:in `call'
+rack (2.0.0.rc1) lib/rack/runtime.rb:22:in `call'
+activesupport (5.0.0.rc1) lib/active_support/cache/strategy/local_cache_middleware.rb:28:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/static.rb:136:in `call'
+rack (2.0.0.rc1) lib/rack/sendfile.rb:111:in `call'
+railties (5.0.0.rc1) lib/rails/engine.rb:522:in `call'
+puma (3.4.0) lib/puma/configuration.rb:224:in `call'
+puma (3.4.0) lib/puma/server.rb:569:in `handle_request'
+puma (3.4.0) lib/puma/server.rb:406:in `process_client'
+puma (3.4.0) lib/puma/server.rb:271:in `block in run'
+puma (3.4.0) lib/puma/thread_pool.rb:114:in `block in spawn_thread'
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.html.erb within rescues/layout
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (1.3ms)
+  Rendered collection of /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/routes/_route.html.erb [21 times] (835.8ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/routes/_table.html.erb (679.3ms)
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (1.2ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.html.erb within rescues/layout (3113.0ms)
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:24:07 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.9ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (20.4ms)
+Completed 200 OK in 193ms (Views: 192.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/scripts.self-73e97981951343768ded77f7e7fba17fa197879ee1d35cae2f2434aa382aeab2.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:07 +0700
+Started GET "/particles.min.js?_=1493515447767" for 127.0.0.1 at 2017-04-30 08:24:07 +0700
+  
+ActionController::RoutingError (No route matches [GET] "/particles.min.js"):
+  
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/debug_exceptions.rb:53:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `block in tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `tagged'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/request_id.rb:24:in `call'
+rack (2.0.0.rc1) lib/rack/method_override.rb:22:in `call'
+rack (2.0.0.rc1) lib/rack/runtime.rb:22:in `call'
+activesupport (5.0.0.rc1) lib/active_support/cache/strategy/local_cache_middleware.rb:28:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/static.rb:136:in `call'
+rack (2.0.0.rc1) lib/rack/sendfile.rb:111:in `call'
+railties (5.0.0.rc1) lib/rails/engine.rb:522:in `call'
+puma (3.4.0) lib/puma/configuration.rb:224:in `call'
+puma (3.4.0) lib/puma/server.rb:569:in `handle_request'
+puma (3.4.0) lib/puma/server.rb:406:in `process_client'
+puma (3.4.0) lib/puma/server.rb:271:in `block in run'
+puma (3.4.0) lib/puma/thread_pool.rb:114:in `block in spawn_thread'
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb (0.6ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb (11.1ms)
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:24:09 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (14.2ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (20.1ms)
+Completed 200 OK in 70ms (Views: 69.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/particles.min.js?_=1493515449890" for 127.0.0.1 at 2017-04-30 08:24:09 +0700
+  
+ActionController::RoutingError (No route matches [GET] "/particles.min.js"):
+  
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/debug_exceptions.rb:53:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `block in tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `tagged'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/request_id.rb:24:in `call'
+rack (2.0.0.rc1) lib/rack/method_override.rb:22:in `call'
+rack (2.0.0.rc1) lib/rack/runtime.rb:22:in `call'
+activesupport (5.0.0.rc1) lib/active_support/cache/strategy/local_cache_middleware.rb:28:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/static.rb:136:in `call'
+rack (2.0.0.rc1) lib/rack/sendfile.rb:111:in `call'
+railties (5.0.0.rc1) lib/rails/engine.rb:522:in `call'
+puma (3.4.0) lib/puma/configuration.rb:224:in `call'
+puma (3.4.0) lib/puma/server.rb:569:in `handle_request'
+puma (3.4.0) lib/puma/server.rb:406:in `process_client'
+puma (3.4.0) lib/puma/server.rb:271:in `block in run'
+puma (3.4.0) lib/puma/thread_pool.rb:114:in `block in spawn_thread'
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb (0.6ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb (15.1ms)
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:24:11 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (2.3ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (17.1ms)
+Completed 200 OK in 75ms (Views: 73.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/particles.min.js?_=1493515451745" for 127.0.0.1 at 2017-04-30 08:24:11 +0700
+  
+ActionController::RoutingError (No route matches [GET] "/particles.min.js"):
+  
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/debug_exceptions.rb:53:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `block in tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `tagged'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/request_id.rb:24:in `call'
+rack (2.0.0.rc1) lib/rack/method_override.rb:22:in `call'
+rack (2.0.0.rc1) lib/rack/runtime.rb:22:in `call'
+activesupport (5.0.0.rc1) lib/active_support/cache/strategy/local_cache_middleware.rb:28:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/static.rb:136:in `call'
+rack (2.0.0.rc1) lib/rack/sendfile.rb:111:in `call'
+railties (5.0.0.rc1) lib/rails/engine.rb:522:in `call'
+puma (3.4.0) lib/puma/configuration.rb:224:in `call'
+puma (3.4.0) lib/puma/server.rb:569:in `handle_request'
+puma (3.4.0) lib/puma/server.rb:406:in `process_client'
+puma (3.4.0) lib/puma/server.rb:271:in `block in run'
+puma (3.4.0) lib/puma/thread_pool.rb:114:in `block in spawn_thread'
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb (0.5ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb (13.2ms)
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:24:13 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (14.7ms)
+Completed 200 OK in 83ms (Views: 82.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-d5520f22713212e512a50353cd8081acf54de0ee4093067ec8326eddf1aff5ff.css?body=1" for 127.0.0.1 at 2017-04-30 08:24:13 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:13 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:13 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:13 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:13 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:13 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:13 +0700
+Started GET "/assets/scripts.self-73e97981951343768ded77f7e7fba17fa197879ee1d35cae2f2434aa382aeab2.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:13 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:13 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:13 +0700
+Started GET "/particles.min.js?_=1493515453829" for 127.0.0.1 at 2017-04-30 08:24:13 +0700
+  
+ActionController::RoutingError (No route matches [GET] "/particles.min.js"):
+  
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/debug_exceptions.rb:53:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `block in tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `tagged'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/request_id.rb:24:in `call'
+rack (2.0.0.rc1) lib/rack/method_override.rb:22:in `call'
+rack (2.0.0.rc1) lib/rack/runtime.rb:22:in `call'
+activesupport (5.0.0.rc1) lib/active_support/cache/strategy/local_cache_middleware.rb:28:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/static.rb:136:in `call'
+rack (2.0.0.rc1) lib/rack/sendfile.rb:111:in `call'
+railties (5.0.0.rc1) lib/rails/engine.rb:522:in `call'
+puma (3.4.0) lib/puma/configuration.rb:224:in `call'
+puma (3.4.0) lib/puma/server.rb:569:in `handle_request'
+puma (3.4.0) lib/puma/server.rb:406:in `process_client'
+puma (3.4.0) lib/puma/server.rb:271:in `block in run'
+puma (3.4.0) lib/puma/thread_pool.rb:114:in `block in spawn_thread'
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb (0.5ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb (23.8ms)
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:24:14 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.8ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (15.6ms)
+Completed 200 OK in 86ms (Views: 84.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-d5520f22713212e512a50353cd8081acf54de0ee4093067ec8326eddf1aff5ff.css?body=1" for 127.0.0.1 at 2017-04-30 08:24:14 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:14 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:14 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:14 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:14 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:14 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:14 +0700
+Started GET "/assets/scripts.self-73e97981951343768ded77f7e7fba17fa197879ee1d35cae2f2434aa382aeab2.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:14 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:14 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:14 +0700
+Started GET "/particles.min.js?_=1493515454768" for 127.0.0.1 at 2017-04-30 08:24:14 +0700
+  
+ActionController::RoutingError (No route matches [GET] "/particles.min.js"):
+  
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/debug_exceptions.rb:53:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `block in tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `tagged'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/request_id.rb:24:in `call'
+rack (2.0.0.rc1) lib/rack/method_override.rb:22:in `call'
+rack (2.0.0.rc1) lib/rack/runtime.rb:22:in `call'
+activesupport (5.0.0.rc1) lib/active_support/cache/strategy/local_cache_middleware.rb:28:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/static.rb:136:in `call'
+rack (2.0.0.rc1) lib/rack/sendfile.rb:111:in `call'
+railties (5.0.0.rc1) lib/rails/engine.rb:522:in `call'
+puma (3.4.0) lib/puma/configuration.rb:224:in `call'
+puma (3.4.0) lib/puma/server.rb:569:in `handle_request'
+puma (3.4.0) lib/puma/server.rb:406:in `process_client'
+puma (3.4.0) lib/puma/server.rb:271:in `block in run'
+puma (3.4.0) lib/puma/thread_pool.rb:114:in `block in spawn_thread'
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb (2.9ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb (15.7ms)
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:24:40 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (5.7ms)
+Completed 200 OK in 181ms (Views: 180.2ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/scripts.self-11654b6f1cc7950fb80697df9af3d1bbc93063035d2bcd8ec8d96fdcbc04bce0.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:41 +0700
+Started GET "/users/assets/particles.min.js?_=1493515481381" for 127.0.0.1 at 2017-04-30 08:24:41 +0700
+  
+ActionController::RoutingError (No route matches [GET] "/users/assets/particles.min.js"):
+  
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/debug_exceptions.rb:53:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `block in tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `tagged'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/request_id.rb:24:in `call'
+rack (2.0.0.rc1) lib/rack/method_override.rb:22:in `call'
+rack (2.0.0.rc1) lib/rack/runtime.rb:22:in `call'
+activesupport (5.0.0.rc1) lib/active_support/cache/strategy/local_cache_middleware.rb:28:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/static.rb:136:in `call'
+rack (2.0.0.rc1) lib/rack/sendfile.rb:111:in `call'
+railties (5.0.0.rc1) lib/rails/engine.rb:522:in `call'
+puma (3.4.0) lib/puma/configuration.rb:224:in `call'
+puma (3.4.0) lib/puma/server.rb:569:in `handle_request'
+puma (3.4.0) lib/puma/server.rb:406:in `process_client'
+puma (3.4.0) lib/puma/server.rb:271:in `block in run'
+puma (3.4.0) lib/puma/thread_pool.rb:114:in `block in spawn_thread'
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb (0.5ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb (19.5ms)
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:24:43 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.9ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (10.4ms)
+Completed 200 OK in 80ms (Views: 79.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/users/assets/particles.min.js?_=1493515483820" for 127.0.0.1 at 2017-04-30 08:24:43 +0700
+  
+ActionController::RoutingError (No route matches [GET] "/users/assets/particles.min.js"):
+  
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/debug_exceptions.rb:53:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `block in tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `tagged'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/request_id.rb:24:in `call'
+rack (2.0.0.rc1) lib/rack/method_override.rb:22:in `call'
+rack (2.0.0.rc1) lib/rack/runtime.rb:22:in `call'
+activesupport (5.0.0.rc1) lib/active_support/cache/strategy/local_cache_middleware.rb:28:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/static.rb:136:in `call'
+rack (2.0.0.rc1) lib/rack/sendfile.rb:111:in `call'
+railties (5.0.0.rc1) lib/rails/engine.rb:522:in `call'
+puma (3.4.0) lib/puma/configuration.rb:224:in `call'
+puma (3.4.0) lib/puma/server.rb:569:in `handle_request'
+puma (3.4.0) lib/puma/server.rb:406:in `process_client'
+puma (3.4.0) lib/puma/server.rb:271:in `block in run'
+puma (3.4.0) lib/puma/thread_pool.rb:114:in `block in spawn_thread'
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.text.erb (0.5ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.text.erb (17.5ms)
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:24:49 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (12.7ms)
+Completed 200 OK in 185ms (Views: 182.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:24:49 +0700
+Started GET "/assets/particles.min.js?_=1493515490048" for 127.0.0.1 at 2017-04-30 08:24:50 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:24:59 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (7.9ms)
+Completed 200 OK in 67ms (Views: 65.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/particles.min.js?_=1493515499818" for 127.0.0.1 at 2017-04-30 08:24:59 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:32:45 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.6ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (7.5ms)
+Completed 200 OK in 83ms (Views: 82.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/particles.min.js?_=1493515966118" for 127.0.0.1 at 2017-04-30 08:32:46 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:33:33 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (10.5ms)
+Completed 200 OK in 85ms (Views: 83.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/particles.min.js?_=1493516014006" for 127.0.0.1 at 2017-04-30 08:33:34 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:35:50 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (2.4ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (4.3ms)
+Completed 200 OK in 68ms (Views: 67.4ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/particles.min.js?_=1493516151176" for 127.0.0.1 at 2017-04-30 08:35:51 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:37:22 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.6ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (12.9ms)
+Completed 200 OK in 4260ms (Views: 4258.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-4c7f8549c660f5b9d9dd9261a7c35f86643a995d48e31d843b9d00f0478729be.css?body=1" for 127.0.0.1 at 2017-04-30 08:37:27 +0700
+Started GET "/assets/particles.min.js?_=1493516247353" for 127.0.0.1 at 2017-04-30 08:37:27 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:38:02 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (1.1ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (11.7ms)
+Completed 200 OK in 6205ms (Views: 6203.5ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-9c22e827569b6692abe0eb66e20e3eef57cc9a2861a60f53319864557869e28c.css?body=1" for 127.0.0.1 at 2017-04-30 08:38:08 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:08 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:08 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:08 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:08 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:09 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:09 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:09 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:09 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:09 +0700
+Started GET "/assets/particles.min.js?_=1493516289564" for 127.0.0.1 at 2017-04-30 08:38:09 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:38:47 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (8.7ms)
+Completed 200 OK in 4350ms (Views: 4349.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-e7a6404a280043683f8a217dffa1fdea903cc4207163e3b5cab0fa74a637b079.css?body=1" for 127.0.0.1 at 2017-04-30 08:38:53 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:53 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:53 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:53 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:53 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:53 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:54 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:54 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:54 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:38:54 +0700
+Started GET "/assets/particles.min.js?_=1493516334708" for 127.0.0.1 at 2017-04-30 08:38:54 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:40:03 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (1.1ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (13.3ms)
+Completed 200 OK in 4667ms (Views: 4666.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-b9c1bab9ae9d1d496edbe7a0e81b467497c2caed45024309b3b7000c50a46ee1.css?body=1" for 127.0.0.1 at 2017-04-30 08:40:07 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:07 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:07 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:08 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:08 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:08 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:08 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:08 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:08 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:08 +0700
+Started GET "/assets/particles.min.js?_=1493516408517" for 127.0.0.1 at 2017-04-30 08:40:08 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:40:56 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.8ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (20.7ms)
+Completed 200 OK in 96ms (Views: 95.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-b9c1bab9ae9d1d496edbe7a0e81b467497c2caed45024309b3b7000c50a46ee1.css?body=1" for 127.0.0.1 at 2017-04-30 08:40:57 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:57 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:57 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:57 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:57 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:57 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:57 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:57 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:57 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:40:57 +0700
+Started GET "/assets/particles.min.js?_=1493516457587" for 127.0.0.1 at 2017-04-30 08:40:57 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:43:43 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (4.9ms)
+Completed 200 OK in 4769ms (Views: 4768.4ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-021e6924ca2338382dcce30e8531aaf935a0f7dea92d3d9d5e0bb4b2785be151.css?body=1" for 127.0.0.1 at 2017-04-30 08:43:47 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:43:47 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:43:47 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:43:47 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:43:48 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:43:48 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:43:48 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:43:48 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:43:48 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:43:48 +0700
+Started GET "/assets/particles.min.js?_=1493516628412" for 127.0.0.1 at 2017-04-30 08:43:48 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:44:14 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.9ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (9.8ms)
+Completed 200 OK in 78ms (Views: 70.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-021e6924ca2338382dcce30e8531aaf935a0f7dea92d3d9d5e0bb4b2785be151.css?body=1" for 127.0.0.1 at 2017-04-30 08:44:14 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:44:14 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:44:14 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:44:14 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:44:14 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:44:14 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:44:14 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:44:14 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:44:14 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:44:14 +0700
+Started GET "/assets/particles.min.js?_=1493516655134" for 127.0.0.1 at 2017-04-30 08:44:15 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:44:20 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.9ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (6.4ms)
+Completed 200 OK in 74ms (Views: 72.7ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/particles.min.js?_=1493516660378" for 127.0.0.1 at 2017-04-30 08:44:20 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:45:10 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (13.2ms)
+Completed 200 OK in 87ms (Views: 85.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/particles.min.js?_=1493516711152" for 127.0.0.1 at 2017-04-30 08:45:11 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:45:19 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.8ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (15.0ms)
+Completed 200 OK in 98ms (Views: 97.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-021e6924ca2338382dcce30e8531aaf935a0f7dea92d3d9d5e0bb4b2785be151.css?body=1" for 127.0.0.1 at 2017-04-30 08:45:19 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:45:19 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:45:19 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:45:19 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:45:19 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:45:19 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:45:19 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:45:19 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:45:19 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:45:19 +0700
+Started GET "/assets/particles.min.js?_=1493516719872" for 127.0.0.1 at 2017-04-30 08:45:19 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:46:55 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 4989ms (Views: 4988.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-6a9ecaf00553f9d3ade7fb2246079249a685731156251a732d1dc9abfb230071.css?body=1" for 127.0.0.1 at 2017-04-30 08:47:00 +0700
+Started GET "/assets/particles.min.js?_=1493516820973" for 127.0.0.1 at 2017-04-30 08:47:01 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:47:03 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (5.1ms)
+Completed 200 OK in 73ms (Views: 71.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/particles.min.js?_=1493516823713" for 127.0.0.1 at 2017-04-30 08:47:03 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:47:07 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (4.1ms)
+Completed 200 OK in 76ms (Views: 75.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-6a9ecaf00553f9d3ade7fb2246079249a685731156251a732d1dc9abfb230071.css?body=1" for 127.0.0.1 at 2017-04-30 08:47:08 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:08 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:08 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:08 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:08 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:08 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:08 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:08 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:08 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:08 +0700
+Started GET "/assets/particles.min.js?_=1493516828636" for 127.0.0.1 at 2017-04-30 08:47:08 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:47:16 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (2.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (9.0ms)
+Completed 200 OK in 5032ms (Views: 5024.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-00adf455439ce1a965a124534a84031c6489d5f6dd1c64db550c2b7a280fcd34.css?body=1" for 127.0.0.1 at 2017-04-30 08:47:21 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:21 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:21 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:21 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:21 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:21 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:21 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:21 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:21 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:47:21 +0700
+Started GET "/assets/particles.min.js?_=1493516841833" for 127.0.0.1 at 2017-04-30 08:47:21 +0700
+[ActionCable] [nt@vensera.com] Finished "/cable/" [WebSocket] for 127.0.0.1 at 2017-04-30 08:48:01 +0700
+[ActionCable] [nt@vensera.com] ChatRoomsChannel stopped streaming from chat_rooms_1_channel
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:49:11 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (4.1ms)
+Completed 200 OK in 4758ms (Views: 4757.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-ea8b056a157f900fbcf4450044ab7b0fd5044bed37d277d55906aa7f23ff778a.css?body=1" for 127.0.0.1 at 2017-04-30 08:49:16 +0700
+Started GET "/assets/particles.min.js?_=1493516956506" for 127.0.0.1 at 2017-04-30 08:49:16 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:49:23 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (12.9ms)
+Completed 200 OK in 91ms (Views: 89.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-ea8b056a157f900fbcf4450044ab7b0fd5044bed37d277d55906aa7f23ff778a.css?body=1" for 127.0.0.1 at 2017-04-30 08:49:24 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:49:24 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:49:24 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:49:24 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:49:24 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:49:24 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:49:24 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:49:24 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:49:24 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:49:24 +0700
+Started GET "/assets/particles.min.js?_=1493516964456" for 127.0.0.1 at 2017-04-30 08:49:24 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:50:36 +0700
+Processing by Devise::SessionsController#new as HTML
+  [1m[36mUser Load (309.1ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+Redirected to http://localhost:3000/
+Filter chain halted as :require_no_authentication rendered or redirected
+Completed 302 Found in 343ms (ActiveRecord: 309.1ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-04-30 08:50:36 +0700
+Processing by ChatRoomsController#index as HTML
+  [1m[36mUser Load (196.0ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering chat_rooms/index.html.erb within layouts/application
+  [1m[36mChatRoom Load (3.9ms)[0m  [1m[34mSELECT "chat_rooms".* FROM "chat_rooms"[0m
+  Rendered collection of chat_rooms/_chat_room.html.erb [1 times] (0.5ms)
+  Rendered chat_rooms/index.html.erb within layouts/application (5.9ms)
+Completed 200 OK in 267ms (Views: 65.1ms | ActiveRecord: 199.9ms)
+
+
+Started GET "/assets/application.self-ea8b056a157f900fbcf4450044ab7b0fd5044bed37d277d55906aa7f23ff778a.css?body=1" for 127.0.0.1 at 2017-04-30 08:50:37 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:50:37 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:50:37 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:50:37 +0700
+Started GET "/assets/particles.min.js?_=1493517037551" for 127.0.0.1 at 2017-04-30 08:50:37 +0700
+Started DELETE "/users/sign_out" for 127.0.0.1 at 2017-04-30 08:50:41 +0700
+Processing by Devise::SessionsController#destroy as HTML
+  Parameters: {"authenticity_token"=>"4D9IDGs66lj1mYDSnMmPFpbMRvUumikG4S41RUZQB5pFirSdIoDW4Oy/BmUl1aSbRg8sKeWpdZHLvB7Y0T1W+g=="}
+  [1m[36mUser Load (300.6ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[35m (9.7ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (304.5ms)[0m  [1m[33mUPDATE "users" SET "remember_created_at" = $1, "updated_at" = $2 WHERE "users"."id" = $3[0m  [["remember_created_at", nil], ["updated_at", 2017-04-30 01:50:41 UTC], ["id", 1]]
+  [1m[35m (1.6ms)[0m  [1m[35mCOMMIT[0m
+Redirected to http://localhost:3000/
+Completed 302 Found in 680ms (ActiveRecord: 616.5ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-04-30 08:50:42 +0700
+Processing by ChatRoomsController#index as HTML
+Completed 401 Unauthorized in 1ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:50:42 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.8ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (13.2ms)
+Completed 200 OK in 79ms (Views: 77.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/particles.min.js?_=1493517042441" for 127.0.0.1 at 2017-04-30 08:50:42 +0700
+Started POST "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:51:18 +0700
+Processing by Devise::SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"zUGIh3NtVInDmeA+7plSvM0tRt+kZtdaoj/QL+9BNaOdkisdaxWHLT3KNfsqGrpx37uT/xLlCIvmJIbJJivqpg==", "user"=>{"email"=>"nt@vensera.com", "password"=>"[FILTERED]"}, "commit"=>"Login"}
+  [1m[36mUser Load (294.5ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."email" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["email", "nt@vensera.com"], ["LIMIT", 1]]
+  [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (65.8ms)[0m  [1m[33mUPDATE "users" SET "current_sign_in_at" = $1, "sign_in_count" = $2, "updated_at" = $3 WHERE "users"."id" = $4[0m  [["current_sign_in_at", 2017-04-30 01:51:18 UTC], ["sign_in_count", 2], ["updated_at", 2017-04-30 01:51:18 UTC], ["id", 1]]
+  [1m[35m (2.0ms)[0m  [1m[35mCOMMIT[0m
+Redirected to http://localhost:3000/
+Completed 302 Found in 724ms (ActiveRecord: 362.5ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-04-30 08:51:19 +0700
+Processing by ChatRoomsController#index as HTML
+  [1m[36mUser Load (27.8ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering chat_rooms/index.html.erb within layouts/application
+  [1m[36mChatRoom Load (0.8ms)[0m  [1m[34mSELECT "chat_rooms".* FROM "chat_rooms"[0m
+  Rendered collection of chat_rooms/_chat_room.html.erb [1 times] (9.2ms)
+  Rendered chat_rooms/index.html.erb within layouts/application (14.0ms)
+Completed 200 OK in 126ms (Views: 95.4ms | ActiveRecord: 28.5ms)
+
+
+Started GET "/assets/particles.min.js?_=1493517079457" for 127.0.0.1 at 2017-04-30 08:51:19 +0700
+Started GET "/" for 127.0.0.1 at 2017-04-30 08:52:30 +0700
+Processing by ChatRoomsController#index as HTML
+  [1m[36mUser Load (130.8ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering chat_rooms/index.html.erb within layouts/application
+  [1m[36mChatRoom Load (17.7ms)[0m  [1m[34mSELECT "chat_rooms".* FROM "chat_rooms"[0m
+  Rendered collection of chat_rooms/_chat_room.html.erb [1 times] (0.6ms)
+  Rendered chat_rooms/index.html.erb within layouts/application (20.1ms)
+Completed 200 OK in 6354ms (Views: 6203.6ms | ActiveRecord: 148.5ms)
+
+
+Started GET "/assets/application.self-bab73a1dace6e055dd698d934b82dbed0aff8848bea057ea388d5edba7758b2f.css?body=1" for 127.0.0.1 at 2017-04-30 08:52:37 +0700
+Started GET "/assets/particles.min.js?_=1493517157168" for 127.0.0.1 at 2017-04-30 08:52:37 +0700
+Started DELETE "/users/sign_out" for 127.0.0.1 at 2017-04-30 08:52:39 +0700
+Processing by Devise::SessionsController#destroy as HTML
+  Parameters: {"authenticity_token"=>"k75nlDxmhj2i+BURfar5pluVnYlm7w/G8Z3CqT82ov8ftnZTQqFFybt1FB+v+X9n29/M93YNI/iTn3ie3pUFLg=="}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (2.3ms)[0m  [1m[35mCOMMIT[0m
+Redirected to http://localhost:3000/
+Completed 302 Found in 14ms (ActiveRecord: 2.8ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-04-30 08:52:39 +0700
+Processing by ChatRoomsController#index as HTML
+Completed 401 Unauthorized in 1ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:52:39 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (10.8ms)
+Completed 200 OK in 86ms (Views: 85.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/particles.min.js?_=1493517159655" for 127.0.0.1 at 2017-04-30 08:52:39 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:52:46 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (4.8ms)
+Completed 200 OK in 81ms (Views: 79.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/particles.min.js?_=1493517166561" for 127.0.0.1 at 2017-04-30 08:52:46 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:54:07 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.7ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (8.0ms)
+Completed 200 OK in 5921ms (Views: 5920.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-8d66e38877acca8a29381e25cb459fdc9349e8dd68f1e1f00241480ac11c532b.css?body=1" for 127.0.0.1 at 2017-04-30 08:54:13 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:54:13 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:54:13 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:54:13 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:54:13 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:54:13 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:54:13 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:54:14 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:54:14 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:54:14 +0700
+Started GET "/assets/particles.min.js?_=1493517254344" for 127.0.0.1 at 2017-04-30 08:54:14 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:59:07 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (1.0ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (155.9ms)
+Completed 200 OK in 804ms (Views: 758.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/users/images/biohazard.png" for 127.0.0.1 at 2017-04-30 08:59:09 +0700
+  
+ActionController::RoutingError (No route matches [GET] "/users/images/biohazard.png"):
+  
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/debug_exceptions.rb:53:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:36:in `call_app'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `block in tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:26:in `tagged'
+activesupport (5.0.0.rc1) lib/active_support/tagged_logging.rb:70:in `tagged'
+railties (5.0.0.rc1) lib/rails/rack/logger.rb:24:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/request_id.rb:24:in `call'
+rack (2.0.0.rc1) lib/rack/method_override.rb:22:in `call'
+rack (2.0.0.rc1) lib/rack/runtime.rb:22:in `call'
+activesupport (5.0.0.rc1) lib/active_support/cache/strategy/local_cache_middleware.rb:28:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/executor.rb:12:in `call'
+actionpack (5.0.0.rc1) lib/action_dispatch/middleware/static.rb:136:in `call'
+rack (2.0.0.rc1) lib/rack/sendfile.rb:111:in `call'
+railties (5.0.0.rc1) lib/rails/engine.rb:522:in `call'
+puma (3.4.0) lib/puma/configuration.rb:224:in `call'
+puma (3.4.0) lib/puma/server.rb:569:in `handle_request'
+puma (3.4.0) lib/puma/server.rb:406:in `process_client'
+puma (3.4.0) lib/puma/server.rb:271:in `block in run'
+puma (3.4.0) lib/puma/thread_pool.rb:114:in `block in spawn_thread'
+Started GET "/assets/particles.min.js?_=1493517549818" for 127.0.0.1 at 2017-04-30 08:59:10 +0700
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.html.erb within rescues/layout
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (1.0ms)
+  Rendered collection of /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/routes/_route.html.erb [21 times] (924.5ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/routes/_table.html.erb (1.5ms)
+  Rendering /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (1.0ms)
+  Rendered /home/administrator/.rbenv/versions/2.3.3/lib/ruby/gems/2.3.0/gems/actionpack-5.0.0.rc1/lib/action_dispatch/middleware/templates/rescues/routing_error.html.erb within rescues/layout (1023.2ms)
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:59:19 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.9ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (9.9ms)
+Completed 200 OK in 85ms (Views: 84.4ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-8d66e38877acca8a29381e25cb459fdc9349e8dd68f1e1f00241480ac11c532b.css?body=1" for 127.0.0.1 at 2017-04-30 08:59:19 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:19 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:19 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:19 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:19 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:19 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:19 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:19 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:19 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:19 +0700
+Started GET "/assets/particles.min.js?_=1493517560101" for 127.0.0.1 at 2017-04-30 08:59:20 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 08:59:49 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (10.4ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (16.5ms)
+Completed 200 OK in 82ms (Views: 81.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.self-8d66e38877acca8a29381e25cb459fdc9349e8dd68f1e1f00241480ac11c532b.css?body=1" for 127.0.0.1 at 2017-04-30 08:59:49 +0700
+Started GET "/assets/action_cable.self-97a1acc11db2782c1b61ce874bff887f64e903d3cb2b533eff50fb799c873c70.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:49 +0700
+Started GET "/assets/jquery_ujs.self-e87806d0cf4489aeb1bb7288016024e8de67fd18db693fe026fe3907581e53cd.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:49 +0700
+Started GET "/assets/jquery2.self-0a6570c8f60714fcfb2147cecaf229b5c0ffff626fe407344d3b00a2ad441b7c.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:49 +0700
+Started GET "/assets/cable.self-6e0514260c1aa76eaf252412ce74e63f68819fd19bf740595f592c5ba4c36537.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:50 +0700
+Started GET "/assets/turbolinks.self-ff1d37d088bcba87ddd5a9edcbdbf45f1103309d3785dfd2324d668bde626e5d.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:50 +0700
+Started GET "/assets/particles.min.self-332f44a7cc620e3f8864ddadbdc0f48bc2d89509b04361bfac0904d0021d60d0.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:50 +0700
+Started GET "/assets/scripts.self-70289c83600dc46d35f7bf97a36002dbc22be62057e55515cc19f2947a8fdf9a.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:50 +0700
+Started GET "/assets/application.self-9b9be17d3c356f1a9a23b03b3b5d01bb4e46845459cc7ac189cd20f571fefb23.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:50 +0700
+Started GET "/assets/channels/rooms.self-624f25abd37599882f2e5744cd4fbfaff89cbb19acee146cee142b84a45c9593.js?body=1" for 127.0.0.1 at 2017-04-30 08:59:50 +0700
+Started GET "/assets/particles.min.js?_=1493517590485" for 127.0.0.1 at 2017-04-30 08:59:50 +0700
+Started GET "/users/sign_up" for 127.0.0.1 at 2017-04-30 09:00:01 +0700
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.9ms)
+  Rendered devise/registrations/new.html.erb within layouts/application (123.8ms)
+Completed 200 OK in 221ms (Views: 219.7ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/users/sign_in" for 127.0.0.1 at 2017-04-30 09:00:08 +0700
+Processing by Devise::SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"1BG31Rht46r69UqRc7eRESE1bMwwQzL3Hk9tgTciNuSsoUrgpDaRhqV+pTDoq+oSxE7QKyUXrjgwe+6hgY0j+g==", "user"=>{"email"=>"nt@vensera.com", "password"=>"[FILTERED]"}, "commit"=>"Login"}
+  [1m[36mUser Load (419.2ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."email" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["email", "nt@vensera.com"], ["LIMIT", 1]]
+  [1m[35m (29.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (87.4ms)[0m  [1m[33mUPDATE "users" SET "current_sign_in_at" = $1, "last_sign_in_at" = $2, "sign_in_count" = $3, "updated_at" = $4 WHERE "users"."id" = $5[0m  [["current_sign_in_at", 2017-04-30 02:00:09 UTC], ["last_sign_in_at", 2017-04-30 01:51:18 UTC], ["sign_in_count", 3], ["updated_at", 2017-04-30 02:00:09 UTC], ["id", 1]]
+  [1m[35m (258.8ms)[0m  [1m[35mCOMMIT[0m
+Redirected to http://localhost:3000/
+Completed 302 Found in 1124ms (ActiveRecord: 794.5ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-04-30 09:00:09 +0700
+Processing by ChatRoomsController#index as HTML
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering chat_rooms/index.html.erb within layouts/application
+  [1m[36mChatRoom Load (0.3ms)[0m  [1m[34mSELECT "chat_rooms".* FROM "chat_rooms"[0m
+  Rendered collection of chat_rooms/_chat_room.html.erb [1 times] (0.6ms)
+  Rendered chat_rooms/index.html.erb within layouts/application (15.8ms)
+Completed 200 OK in 113ms (Views: 78.7ms | ActiveRecord: 0.8ms)
+
+
+Started GET "/assets/particles.min.js?_=1493517609838" for 127.0.0.1 at 2017-04-30 09:00:10 +0700
+Started DELETE "/users/sign_out" for 127.0.0.1 at 2017-04-30 09:00:13 +0700
+Processing by Devise::SessionsController#destroy as HTML
+  Parameters: {"authenticity_token"=>"8WtiLpnPShcPFbuS5MzoNL/k1cnPilhIcH2Llz4+kkWbtJxCV2cbpWfTTIMlPudwdAE6bKsCHNIlWn3ZCHYOiw=="}
+  [1m[36mUser Load (16.6ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCOMMIT[0m
+Redirected to http://localhost:3000/
+Completed 302 Found in 20ms (ActiveRecord: 16.9ms)
+
+
+Started GET "/" for 127.0.0.1 at 2017-04-30 09:00:13 +0700
+Processing by ChatRoomsController#index as HTML
+Completed 401 Unauthorized in 0ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 09:00:13 +0700
+Processing by Devise::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (0.6ms)
+  Rendered devise/sessions/new.html.erb within layouts/application (3.0ms)
+Completed 200 OK in 72ms (Views: 70.5ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/particles.min.js?_=1493517613695" for 127.0.0.1 at 2017-04-30 09:00:13 +0700
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 09:05:38 +0700
+  [1m[36mActiveRecord::SchemaMigration Load (69.7ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by Users::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/sessions
+  Rendered devise/shared/_links.html.erb (1.8ms)
+  Rendered devise/sessions/new.html.erb within layouts/sessions (91.0ms)
+Completed 200 OK in 519ms (Views: 178.6ms | ActiveRecord: 264.4ms)
+
+
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 09:06:50 +0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.5ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by Users::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/sessions
+  Rendered devise/shared/_links.html.erb (1.3ms)
+  Rendered devise/sessions/new.html.erb within layouts/sessions (52.9ms)
+Started GET "/users/sign_in" for 127.0.0.1 at 2017-04-30 09:06:51 +0700
+Processing by Users::SessionsController#new as HTML
+  Rendering devise/sessions/new.html.erb within layouts/sessions
+  Rendered devise/shared/_links.html.erb (1.2ms)
+  Rendered devise/sessions/new.html.erb within layouts/sessions (11.5ms)
+Completed 200 OK in 793ms (Views: 791.4ms | ActiveRecord: 0.0ms)
+
+
+Completed 200 OK in 1698ms (Views: 1630.7ms | ActiveRecord: 6.0ms)
+
+
+Started GET "/assets/particles.min.js?_=1493518012763" for 127.0.0.1 at 2017-04-30 09:06:52 +0700

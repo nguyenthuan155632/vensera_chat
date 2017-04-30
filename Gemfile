@@ -22,13 +22,14 @@ gem 'redis', '~> 3.2'
 
 gem 'devise'
 
+gem 'pg'
+
 group :development do
   gem 'sqlite3'
   gem 'pry-rails'
 end
 
 group :production do
-  gem 'pg'
   gem 'rails_12factor'
 end
 
