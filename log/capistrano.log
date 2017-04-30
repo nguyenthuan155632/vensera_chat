@@ -263,3 +263,175 @@ and the repository exists.
   INFO [e40a04fc] Running /usr/bin/env echo "Branch master (at cd0aeb7d2061c507237efbb73287bfc29ebf0bcd) deployed as release 20170430031950 by administrator" >> /var/www/html/vensera_chat/revisions.log as ubuntu@54.250.243.71
  DEBUG [e40a04fc] Command: cd /var/www/html/vensera_chat/releases && /usr/bin/env echo "Branch master (at cd0aeb7d2061c507237efbb73287bfc29ebf0bcd) deployed as release 20170430031950 by administrator" >> /var/www/html/vensera_chat/revisions.log
   INFO [e40a04fc] Finished in 0.183 seconds with exit status 0 (successful).
+  INFO ---------------------------------------------------------------------------
+  INFO START 2017-04-30 10:31:57 +0700 cap production deploy
+  INFO ---------------------------------------------------------------------------
+  INFO [72fc2b7e] Running /usr/bin/env mkdir -p /tmp as ubuntu@54.250.243.71
+ DEBUG [72fc2b7e] Command: /usr/bin/env mkdir -p /tmp
+  INFO [72fc2b7e] Finished in 1.326 seconds with exit status 0 (successful).
+ DEBUG Uploading /tmp/git-ssh-vensera_chat-production-administrator.sh 0.0%
+  INFO Uploading /tmp/git-ssh-vensera_chat-production-administrator.sh 100.0%
+  INFO [74ec6546] Running /usr/bin/env chmod 700 /tmp/git-ssh-vensera_chat-production-administrator.sh as ubuntu@54.250.243.71
+ DEBUG [74ec6546] Command: /usr/bin/env chmod 700 /tmp/git-ssh-vensera_chat-production-administrator.sh
+  INFO [74ec6546] Finished in 0.184 seconds with exit status 0 (successful).
+  INFO [a52df110] Running /usr/bin/env git ls-remote https://github.com/nguyenthuan155632/vensera_chat HEAD as ubuntu@54.250.243.71
+ DEBUG [a52df110] Command: ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-vensera_chat-production-administrator.sh" ; /usr/bin/env git ls-remote https://github.com/nguyenthuan155632/vensera_chat HEAD )
+ DEBUG [a52df110] 	5d6f7ce1e95443e2b61417978acb3005839ac73b	HEAD
+  INFO [a52df110] Finished in 0.862 seconds with exit status 0 (successful).
+  INFO [c903b328] Running /usr/bin/env mkdir -p /var/www/html/vensera_chat/shared /var/www/html/vensera_chat/releases as ubuntu@54.250.243.71
+ DEBUG [c903b328] Command: /usr/bin/env mkdir -p /var/www/html/vensera_chat/shared /var/www/html/vensera_chat/releases
+  INFO [c903b328] Finished in 0.185 seconds with exit status 0 (successful).
+  INFO [374dc38e] Running /usr/bin/env mkdir -p /var/www/html/vensera_chat/shared/log /var/www/html/vensera_chat/shared/tmp/pids /var/www/html/vensera_chat/shared/tmp/cache /var/www/html/vensera_chat/shared/tmp/sockets /var/www/html/vensera_chat/shared/public/system as ubuntu@54.250.243.71
+ DEBUG [374dc38e] Command: /usr/bin/env mkdir -p /var/www/html/vensera_chat/shared/log /var/www/html/vensera_chat/shared/tmp/pids /var/www/html/vensera_chat/shared/tmp/cache /var/www/html/vensera_chat/shared/tmp/sockets /var/www/html/vensera_chat/shared/public/system
+  INFO [374dc38e] Finished in 0.183 seconds with exit status 0 (successful).
+  INFO [253cefeb] Running /usr/bin/env mkdir -p /var/www/html/vensera_chat/shared/config as ubuntu@54.250.243.71
+ DEBUG [253cefeb] Command: /usr/bin/env mkdir -p /var/www/html/vensera_chat/shared/config
+  INFO [253cefeb] Finished in 0.182 seconds with exit status 0 (successful).
+ DEBUG [16444f9a] Running [ -f /var/www/html/vensera_chat/shared/config/database.yml ] as ubuntu@54.250.243.71
+ DEBUG [16444f9a] Command: [ -f /var/www/html/vensera_chat/shared/config/database.yml ]
+ DEBUG [16444f9a] Finished in 0.181 seconds with exit status 0 (successful).
+ DEBUG [37270f45] Running [ -f /var/www/html/vensera_chat/shared/config/secrets.yml ] as ubuntu@54.250.243.71
+ DEBUG [37270f45] Command: [ -f /var/www/html/vensera_chat/shared/config/secrets.yml ]
+ DEBUG [37270f45] Finished in 0.180 seconds with exit status 0 (successful).
+ DEBUG [faf87269] Running [ -f /var/www/html/vensera_chat/current/REVISION ] as ubuntu@54.250.243.71
+ DEBUG [faf87269] Command: [ -f /var/www/html/vensera_chat/current/REVISION ]
+ DEBUG [faf87269] Finished in 0.181 seconds with exit status 0 (successful).
+ DEBUG [8f2f6229] Running /usr/bin/env cat /var/www/html/vensera_chat/current/REVISION 2>/dev/null as ubuntu@54.250.243.71
+ DEBUG [8f2f6229] Command: /usr/bin/env cat /var/www/html/vensera_chat/current/REVISION 2>/dev/null
+ DEBUG [8f2f6229] 	cd0aeb7d2061c507237efbb73287bfc29ebf0bcd
+ DEBUG [8f2f6229] Finished in 0.181 seconds with exit status 0 (successful).
+ DEBUG [177094a9] Running [ -f /var/www/html/vensera_chat/repo/HEAD ] as ubuntu@54.250.243.71
+ DEBUG [177094a9] Command: [ -f /var/www/html/vensera_chat/repo/HEAD ]
+ DEBUG [177094a9] Finished in 0.181 seconds with exit status 0 (successful).
+  INFO The repository mirror is at /var/www/html/vensera_chat/repo
+ DEBUG [7001df70] Running if test ! -d /var/www/html/vensera_chat/repo; then echo "Directory does not exist '/var/www/html/vensera_chat/repo'" 1>&2; false; fi as ubuntu@54.250.243.71
+ DEBUG [7001df70] Command: if test ! -d /var/www/html/vensera_chat/repo; then echo "Directory does not exist '/var/www/html/vensera_chat/repo'" 1>&2; false; fi
+ DEBUG [7001df70] Finished in 0.182 seconds with exit status 0 (successful).
+  INFO [93638559] Running /usr/bin/env git remote set-url origin https://github.com/nguyenthuan155632/vensera_chat as ubuntu@54.250.243.71
+ DEBUG [93638559] Command: cd /var/www/html/vensera_chat/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-vensera_chat-production-administrator.sh" ; /usr/bin/env git remote set-url origin https://github.com/nguyenthuan155632/vensera_chat )
+  INFO [93638559] Finished in 0.183 seconds with exit status 0 (successful).
+  INFO [b3a2b7c4] Running /usr/bin/env git remote update --prune as ubuntu@54.250.243.71
+ DEBUG [b3a2b7c4] Command: cd /var/www/html/vensera_chat/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-vensera_chat-production-administrator.sh" ; /usr/bin/env git remote update --prune )
+ DEBUG [b3a2b7c4] 	Fetching origin
+ DEBUG [b3a2b7c4] 	From https://github.com/nguyenthuan155632/vensera_chat
+   cd0aeb7..5d6f7ce  master     -> master
+  INFO [b3a2b7c4] Finished in 1.113 seconds with exit status 0 (successful).
+ DEBUG [3a6092c0] Running if test ! -d /var/www/html/vensera_chat/repo; then echo "Directory does not exist '/var/www/html/vensera_chat/repo'" 1>&2; false; fi as ubuntu@54.250.243.71
+ DEBUG [3a6092c0] Command: if test ! -d /var/www/html/vensera_chat/repo; then echo "Directory does not exist '/var/www/html/vensera_chat/repo'" 1>&2; false; fi
+ DEBUG [3a6092c0] Finished in 0.186 seconds with exit status 0 (successful).
+  INFO [9c2df75d] Running /usr/bin/env mkdir -p /var/www/html/vensera_chat/releases/20170430033202 as ubuntu@54.250.243.71
+ DEBUG [9c2df75d] Command: cd /var/www/html/vensera_chat/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-vensera_chat-production-administrator.sh" ; /usr/bin/env mkdir -p /var/www/html/vensera_chat/releases/20170430033202 )
+  INFO [9c2df75d] Finished in 0.182 seconds with exit status 0 (successful).
+  INFO [995e9f32] Running /usr/bin/env git archive master | /usr/bin/env tar -x -f - -C /var/www/html/vensera_chat/releases/20170430033202 as ubuntu@54.250.243.71
+ DEBUG [995e9f32] Command: cd /var/www/html/vensera_chat/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-vensera_chat-production-administrator.sh" ; /usr/bin/env git archive master | /usr/bin/env tar -x -f - -C /var/www/html/vensera_chat/releases/20170430033202 )
+  INFO [995e9f32] Finished in 0.214 seconds with exit status 0 (successful).
+ DEBUG [863a028d] Running if test ! -d /var/www/html/vensera_chat/repo; then echo "Directory does not exist '/var/www/html/vensera_chat/repo'" 1>&2; false; fi as ubuntu@54.250.243.71
+ DEBUG [863a028d] Command: if test ! -d /var/www/html/vensera_chat/repo; then echo "Directory does not exist '/var/www/html/vensera_chat/repo'" 1>&2; false; fi
+ DEBUG [863a028d] Finished in 0.181 seconds with exit status 0 (successful).
+ DEBUG [a9644e0f] Running /usr/bin/env git rev-list --max-count=1 master as ubuntu@54.250.243.71
+ DEBUG [a9644e0f] Command: cd /var/www/html/vensera_chat/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-vensera_chat-production-administrator.sh" ; /usr/bin/env git rev-list --max-count=1 master )
+ DEBUG [a9644e0f] 	5d6f7ce1e95443e2b61417978acb3005839ac73b
+ DEBUG [a9644e0f] Finished in 0.182 seconds with exit status 0 (successful).
+ DEBUG [9f44039d] Running if test ! -d /var/www/html/vensera_chat/releases/20170430033202; then echo "Directory does not exist '/var/www/html/vensera_chat/releases/20170430033202'" 1>&2; false; fi as ubuntu@54.250.243.71
+ DEBUG [9f44039d] Command: if test ! -d /var/www/html/vensera_chat/releases/20170430033202; then echo "Directory does not exist '/var/www/html/vensera_chat/releases/20170430033202'" 1>&2; false; fi
+ DEBUG [9f44039d] Finished in 0.181 seconds with exit status 0 (successful).
+  INFO [88539543] Running /usr/bin/env echo "5d6f7ce1e95443e2b61417978acb3005839ac73b" >> REVISION as ubuntu@54.250.243.71
+ DEBUG [88539543] Command: cd /var/www/html/vensera_chat/releases/20170430033202 && /usr/bin/env echo "5d6f7ce1e95443e2b61417978acb3005839ac73b" >> REVISION
+  INFO [88539543] Finished in 0.183 seconds with exit status 0 (successful).
+  INFO [4383265d] Running /usr/bin/env mkdir -p /var/www/html/vensera_chat/releases/20170430033202/config as ubuntu@54.250.243.71
+ DEBUG [4383265d] Command: /usr/bin/env mkdir -p /var/www/html/vensera_chat/releases/20170430033202/config
+  INFO [4383265d] Finished in 0.182 seconds with exit status 0 (successful).
+ DEBUG [d2948668] Running [ -L /var/www/html/vensera_chat/releases/20170430033202/config/database.yml ] as ubuntu@54.250.243.71
+ DEBUG [d2948668] Command: [ -L /var/www/html/vensera_chat/releases/20170430033202/config/database.yml ]
+ DEBUG [d2948668] Finished in 0.181 seconds with exit status 1 (failed).
+ DEBUG [7b8f920d] Running [ -f /var/www/html/vensera_chat/releases/20170430033202/config/database.yml ] as ubuntu@54.250.243.71
+ DEBUG [7b8f920d] Command: [ -f /var/www/html/vensera_chat/releases/20170430033202/config/database.yml ]
+ DEBUG [7b8f920d] Finished in 0.179 seconds with exit status 0 (successful).
+  INFO [fcf40f36] Running /usr/bin/env rm /var/www/html/vensera_chat/releases/20170430033202/config/database.yml as ubuntu@54.250.243.71
+ DEBUG [fcf40f36] Command: /usr/bin/env rm /var/www/html/vensera_chat/releases/20170430033202/config/database.yml
+  INFO [fcf40f36] Finished in 0.182 seconds with exit status 0 (successful).
+  INFO [1610155a] Running /usr/bin/env ln -s /var/www/html/vensera_chat/shared/config/database.yml /var/www/html/vensera_chat/releases/20170430033202/config/database.yml as ubuntu@54.250.243.71
+ DEBUG [1610155a] Command: /usr/bin/env ln -s /var/www/html/vensera_chat/shared/config/database.yml /var/www/html/vensera_chat/releases/20170430033202/config/database.yml
+  INFO [1610155a] Finished in 0.182 seconds with exit status 0 (successful).
+ DEBUG [ac37c167] Running [ -L /var/www/html/vensera_chat/releases/20170430033202/config/secrets.yml ] as ubuntu@54.250.243.71
+ DEBUG [ac37c167] Command: [ -L /var/www/html/vensera_chat/releases/20170430033202/config/secrets.yml ]
+ DEBUG [ac37c167] Finished in 0.182 seconds with exit status 1 (failed).
+ DEBUG [d94e461b] Running [ -f /var/www/html/vensera_chat/releases/20170430033202/config/secrets.yml ] as ubuntu@54.250.243.71
+ DEBUG [d94e461b] Command: [ -f /var/www/html/vensera_chat/releases/20170430033202/config/secrets.yml ]
+ DEBUG [d94e461b] Finished in 0.180 seconds with exit status 0 (successful).
+  INFO [39c82978] Running /usr/bin/env rm /var/www/html/vensera_chat/releases/20170430033202/config/secrets.yml as ubuntu@54.250.243.71
+ DEBUG [39c82978] Command: /usr/bin/env rm /var/www/html/vensera_chat/releases/20170430033202/config/secrets.yml
+  INFO [39c82978] Finished in 0.183 seconds with exit status 0 (successful).
+  INFO [0475ded3] Running /usr/bin/env ln -s /var/www/html/vensera_chat/shared/config/secrets.yml /var/www/html/vensera_chat/releases/20170430033202/config/secrets.yml as ubuntu@54.250.243.71
+ DEBUG [0475ded3] Command: /usr/bin/env ln -s /var/www/html/vensera_chat/shared/config/secrets.yml /var/www/html/vensera_chat/releases/20170430033202/config/secrets.yml
+  INFO [0475ded3] Finished in 0.182 seconds with exit status 0 (successful).
+  INFO [466d4365] Running /usr/bin/env mkdir -p /var/www/html/vensera_chat/releases/20170430033202 /var/www/html/vensera_chat/releases/20170430033202/tmp /var/www/html/vensera_chat/releases/20170430033202/public as ubuntu@54.250.243.71
+ DEBUG [466d4365] Command: /usr/bin/env mkdir -p /var/www/html/vensera_chat/releases/20170430033202 /var/www/html/vensera_chat/releases/20170430033202/tmp /var/www/html/vensera_chat/releases/20170430033202/public
+  INFO [466d4365] Finished in 0.183 seconds with exit status 0 (successful).
+ DEBUG [42240163] Running [ -L /var/www/html/vensera_chat/releases/20170430033202/log ] as ubuntu@54.250.243.71
+ DEBUG [42240163] Command: [ -L /var/www/html/vensera_chat/releases/20170430033202/log ]
+ DEBUG [42240163] Finished in 0.181 seconds with exit status 1 (failed).
+ DEBUG [2cad7404] Running [ -d /var/www/html/vensera_chat/releases/20170430033202/log ] as ubuntu@54.250.243.71
+ DEBUG [2cad7404] Command: [ -d /var/www/html/vensera_chat/releases/20170430033202/log ]
+ DEBUG [2cad7404] Finished in 0.181 seconds with exit status 0 (successful).
+  INFO [6aad46f2] Running /usr/bin/env rm -rf /var/www/html/vensera_chat/releases/20170430033202/log as ubuntu@54.250.243.71
+ DEBUG [6aad46f2] Command: /usr/bin/env rm -rf /var/www/html/vensera_chat/releases/20170430033202/log
+  INFO [6aad46f2] Finished in 0.182 seconds with exit status 0 (successful).
+  INFO [1e45a1fe] Running /usr/bin/env ln -s /var/www/html/vensera_chat/shared/log /var/www/html/vensera_chat/releases/20170430033202/log as ubuntu@54.250.243.71
+ DEBUG [1e45a1fe] Command: /usr/bin/env ln -s /var/www/html/vensera_chat/shared/log /var/www/html/vensera_chat/releases/20170430033202/log
+  INFO [1e45a1fe] Finished in 0.184 seconds with exit status 0 (successful).
+ DEBUG [d0de8329] Running [ -L /var/www/html/vensera_chat/releases/20170430033202/tmp/pids ] as ubuntu@54.250.243.71
+ DEBUG [d0de8329] Command: [ -L /var/www/html/vensera_chat/releases/20170430033202/tmp/pids ]
+ DEBUG [d0de8329] Finished in 0.180 seconds with exit status 1 (failed).
+ DEBUG [c619cdde] Running [ -d /var/www/html/vensera_chat/releases/20170430033202/tmp/pids ] as ubuntu@54.250.243.71
+ DEBUG [c619cdde] Command: [ -d /var/www/html/vensera_chat/releases/20170430033202/tmp/pids ]
+ DEBUG [c619cdde] Finished in 0.182 seconds with exit status 1 (failed).
+  INFO [c1a6685e] Running /usr/bin/env ln -s /var/www/html/vensera_chat/shared/tmp/pids /var/www/html/vensera_chat/releases/20170430033202/tmp/pids as ubuntu@54.250.243.71
+ DEBUG [c1a6685e] Command: /usr/bin/env ln -s /var/www/html/vensera_chat/shared/tmp/pids /var/www/html/vensera_chat/releases/20170430033202/tmp/pids
+  INFO [c1a6685e] Finished in 0.181 seconds with exit status 0 (successful).
+ DEBUG [54fd07d0] Running [ -L /var/www/html/vensera_chat/releases/20170430033202/tmp/cache ] as ubuntu@54.250.243.71
+ DEBUG [54fd07d0] Command: [ -L /var/www/html/vensera_chat/releases/20170430033202/tmp/cache ]
+ DEBUG [54fd07d0] Finished in 0.183 seconds with exit status 1 (failed).
+ DEBUG [a19e9bd9] Running [ -d /var/www/html/vensera_chat/releases/20170430033202/tmp/cache ] as ubuntu@54.250.243.71
+ DEBUG [a19e9bd9] Command: [ -d /var/www/html/vensera_chat/releases/20170430033202/tmp/cache ]
+ DEBUG [a19e9bd9] Finished in 0.180 seconds with exit status 0 (successful).
+  INFO [ba663154] Running /usr/bin/env rm -rf /var/www/html/vensera_chat/releases/20170430033202/tmp/cache as ubuntu@54.250.243.71
+ DEBUG [ba663154] Command: /usr/bin/env rm -rf /var/www/html/vensera_chat/releases/20170430033202/tmp/cache
+  INFO [ba663154] Finished in 0.190 seconds with exit status 0 (successful).
+  INFO [ae9a7da4] Running /usr/bin/env ln -s /var/www/html/vensera_chat/shared/tmp/cache /var/www/html/vensera_chat/releases/20170430033202/tmp/cache as ubuntu@54.250.243.71
+ DEBUG [ae9a7da4] Command: /usr/bin/env ln -s /var/www/html/vensera_chat/shared/tmp/cache /var/www/html/vensera_chat/releases/20170430033202/tmp/cache
+  INFO [ae9a7da4] Finished in 0.183 seconds with exit status 0 (successful).
+ DEBUG [4ef4cce5] Running [ -L /var/www/html/vensera_chat/releases/20170430033202/tmp/sockets ] as ubuntu@54.250.243.71
+ DEBUG [4ef4cce5] Command: [ -L /var/www/html/vensera_chat/releases/20170430033202/tmp/sockets ]
+ DEBUG [4ef4cce5] Finished in 0.181 seconds with exit status 1 (failed).
+ DEBUG [7f6a4ce4] Running [ -d /var/www/html/vensera_chat/releases/20170430033202/tmp/sockets ] as ubuntu@54.250.243.71
+ DEBUG [7f6a4ce4] Command: [ -d /var/www/html/vensera_chat/releases/20170430033202/tmp/sockets ]
+ DEBUG [7f6a4ce4] Finished in 0.180 seconds with exit status 1 (failed).
+  INFO [2e75020d] Running /usr/bin/env ln -s /var/www/html/vensera_chat/shared/tmp/sockets /var/www/html/vensera_chat/releases/20170430033202/tmp/sockets as ubuntu@54.250.243.71
+ DEBUG [2e75020d] Command: /usr/bin/env ln -s /var/www/html/vensera_chat/shared/tmp/sockets /var/www/html/vensera_chat/releases/20170430033202/tmp/sockets
+  INFO [2e75020d] Finished in 0.186 seconds with exit status 0 (successful).
+ DEBUG [051ae3b4] Running [ -L /var/www/html/vensera_chat/releases/20170430033202/public/system ] as ubuntu@54.250.243.71
+ DEBUG [051ae3b4] Command: [ -L /var/www/html/vensera_chat/releases/20170430033202/public/system ]
+ DEBUG [051ae3b4] Finished in 0.183 seconds with exit status 1 (failed).
+ DEBUG [c96a2382] Running [ -d /var/www/html/vensera_chat/releases/20170430033202/public/system ] as ubuntu@54.250.243.71
+ DEBUG [c96a2382] Command: [ -d /var/www/html/vensera_chat/releases/20170430033202/public/system ]
+ DEBUG [c96a2382] Finished in 0.179 seconds with exit status 1 (failed).
+  INFO [7efa7835] Running /usr/bin/env ln -s /var/www/html/vensera_chat/shared/public/system /var/www/html/vensera_chat/releases/20170430033202/public/system as ubuntu@54.250.243.71
+ DEBUG [7efa7835] Command: /usr/bin/env ln -s /var/www/html/vensera_chat/shared/public/system /var/www/html/vensera_chat/releases/20170430033202/public/system
+  INFO [7efa7835] Finished in 0.183 seconds with exit status 0 (successful).
+  INFO [b169c5ee] Running /usr/bin/env ln -s /var/www/html/vensera_chat/releases/20170430033202 /var/www/html/vensera_chat/releases/current as ubuntu@54.250.243.71
+ DEBUG [b169c5ee] Command: /usr/bin/env ln -s /var/www/html/vensera_chat/releases/20170430033202 /var/www/html/vensera_chat/releases/current
+  INFO [b169c5ee] Finished in 0.182 seconds with exit status 0 (successful).
+  INFO [4494a761] Running /usr/bin/env mv /var/www/html/vensera_chat/releases/current /var/www/html/vensera_chat as ubuntu@54.250.243.71
+ DEBUG [4494a761] Command: /usr/bin/env mv /var/www/html/vensera_chat/releases/current /var/www/html/vensera_chat
+  INFO [4494a761] Finished in 0.181 seconds with exit status 0 (successful).
+ DEBUG [6ec1b3ea] Running /usr/bin/env ls -x /var/www/html/vensera_chat/releases as ubuntu@54.250.243.71
+ DEBUG [6ec1b3ea] Command: /usr/bin/env ls -x /var/www/html/vensera_chat/releases
+ DEBUG [6ec1b3ea] 	20170430031950	20170430033202
+ DEBUG [6ec1b3ea] Finished in 0.183 seconds with exit status 0 (successful).
+ DEBUG [9b374187] Running if test ! -d /var/www/html/vensera_chat/releases; then echo "Directory does not exist '/var/www/html/vensera_chat/releases'" 1>&2; false; fi as ubuntu@54.250.243.71
+ DEBUG [9b374187] Command: if test ! -d /var/www/html/vensera_chat/releases; then echo "Directory does not exist '/var/www/html/vensera_chat/releases'" 1>&2; false; fi
+ DEBUG [9b374187] Finished in 0.180 seconds with exit status 0 (successful).
+  INFO [f93f68be] Running /usr/bin/env echo "Branch master (at 5d6f7ce1e95443e2b61417978acb3005839ac73b) deployed as release 20170430033202 by administrator" >> /var/www/html/vensera_chat/revisions.log as ubuntu@54.250.243.71
+ DEBUG [f93f68be] Command: cd /var/www/html/vensera_chat/releases && /usr/bin/env echo "Branch master (at 5d6f7ce1e95443e2b61417978acb3005839ac73b) deployed as release 20170430033202 by administrator" >> /var/www/html/vensera_chat/revisions.log
+  INFO [f93f68be] Finished in 0.183 seconds with exit status 0 (successful).
