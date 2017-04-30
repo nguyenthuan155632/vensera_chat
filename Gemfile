@@ -29,7 +29,7 @@ gem 'json', '~> 2.1.0'
 group :development do
   gem 'sqlite3'
   gem 'pry-rails'
-  gem 'capistrano-rails', group: :development
+  gem 'capistrano-rails'
 end
 
 group :production do
