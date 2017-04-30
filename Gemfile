@@ -27,6 +27,7 @@ gem 'pg'
 group :development do
   gem 'sqlite3'
   gem 'pry-rails'
+  gem 'capistrano-rails', group: :development
 end
 
 group :production do
