@@ -69,11 +69,26 @@ body, html {
 	border-color: #ff5252;
 }
 #particles-js{
-  	width: 100%;
-  	height: 100%;
-  	background-size: cover;
-  	background-position: 50% 50%;
-  	position: fixed;
-  	top: 0px;
-  	z-index:1;
+	width: 100%;
+	height: 100%;
+	background-size: cover;
+	background-position: 50% 50%;
+	position: fixed;
+	top: 0px;
+	z-index:1;
+}
+
+.card {
+  background-color: #000;
+  width: 75%;
+	float: left;
+	text-align: left;
+}
+
+.card.own_left {
+}
+
+.card.own_right {
+	float: right;
+	text-align: right;
 }

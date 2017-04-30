@@ -30,6 +30,7 @@ group :development do
   gem 'sqlite3'
   gem 'pry-rails'
   gem 'capistrano-rails'
+  gem 'byebug'
 end
 
 group :production do
